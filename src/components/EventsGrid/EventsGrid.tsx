@@ -8,37 +8,30 @@ interface Event {
   description: string;
   imageUrl: string;
   date?: string;
-  buttonText: string;
+  price: string;
 }
 
 interface EventsGridProps {
-  title: string;
   events: Event[];
-  onEventClick?: (eventId: string) => void;
+  onEventClick?: (id: string) => void;
 }
 
-const EventsGrid: React.FC<EventsGridProps> = ({
-  title,
-  events,
-  onEventClick
-}) => {
+const EventsGrid: React.FC<EventsGridProps> = ({ events, onEventClick }) => {
   return (
-    <section className="events-section">
-      <h2>{title}</h2>
-      <div className="events-grid">
-        {events.map((event) => (
+    <div className="events-grid">
+      {events.map((event) => (
+        <div key={event.id} className="event-item">
           <EventCard
-            key={event.id}
+            id={event.id}
             title={event.title}
             description={event.description}
             imageUrl={event.imageUrl}
             date={event.date}
-            buttonText={event.buttonText}
-            onButtonClick={() => onEventClick?.(event.id)}
+            price={event.price}
           />
-        ))}
-      </div>
-    </section>
+        </div>
+      ))}
+    </div>
   );
 };
 

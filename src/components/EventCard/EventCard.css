@@ -2,77 +2,87 @@
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
+  height: auto;
+  min-height: 450px;
   max-width: 400px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .event-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(98, 57, 57, 0.15);
 }
 
 .event-image {
   width: 100%;
-  height: 280px;
+  height: 200px;
   object-fit: cover;
+  border-radius: 12px 12px 0 0;
 }
 
 .event-content {
-  padding: 2rem;
-}
-
-.event-title {
-  font-size: 1.5rem;
-  margin-bottom: 0.75rem;
-  color: #623939;
-}
-
-.event-details {
-  color: #666;
-  margin-bottom: 1.5rem;
-  font-size: 1.1rem;
-}
-
-.event-buttons {
+  padding: 1.5rem;
+  flex: 1;
   display: flex;
-  gap: 1.25rem;
-  justify-content: flex-end;
-}
-
-.event-button {
-  padding: 0.75rem 2rem !important;
-  font-size: 1rem !important;
-  background-color: #BB5256 !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 25px !important;
-  transition: transform 0.2s ease, opacity 0.2s ease !important;
-}
-
-.event-button:hover {
-  opacity: 0.9;
-  transform: scale(1.05);
+  flex-direction: column;
 }
 
 .event-card h3 {
-  margin: 1rem;
-  color: #333;
+  color: #623939;
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem 0;
 }
 
-.event-card .date {
-  margin: 0 1rem;
-  color: #666;
+.date {
+  color: #BB5256;
   font-size: 0.9rem;
+  margin: 0 0 1rem 0;
 }
 
-.event-card .description {
-  margin: 1rem;
-  color: #666;
-  flex-grow: 1;
+.description {
+  color: #623939;
+  font-size: 0.95rem;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.event-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.price {
+  color: #623939;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.event-button {
+  padding: 0.75rem 1.5rem !important;
+  background-color: #BB5256 !important;
+  color: #F3EEE8 !important;
+  border: none !important;
+  border-radius: 25px !important;
+  font-size: 0.95rem !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.event-button:hover {
+  background-color: #a34146 !important;
 }
 
 .event-card .event-button {
-  margin: 1rem;
+  margin: 0;
 } 

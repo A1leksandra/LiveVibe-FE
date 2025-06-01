@@ -5,9 +5,9 @@ import './Hero.css';
 const Hero: React.FC = () => {
   return (
     <section className="hero">
-      <h1>Inspiration starts with an event</h1>
-      <Button variant="primary" className="hero-button">
-        Find your next event
+      <h1>Знайдіть своє наступне враження</h1>
+      <Button variant="contained" className="hero-button">
+        Знайти подію
       </Button>
     </section>
   );

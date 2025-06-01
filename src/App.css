@@ -211,3 +211,16 @@ footer {
     font-size: 2rem;
   }
 }
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.section-title {
+  color: #623939;
+  font-size: 2rem;
+  margin: 2rem 0;
+  text-align: center;
+}

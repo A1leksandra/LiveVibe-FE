@@ -1,0 +1,139 @@
+.event-details {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 4rem); /* Account for padding */
+  display: flex;
+  align-items: flex-start;
+}
+
+.event-details-content {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(98, 57, 57, 0.1);
+  padding: 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 800px;
+}
+
+.event-details .event-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  flex-shrink: 0;
+}
+
+.event-details h1 {
+  color: #623939;
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  flex-shrink: 0;
+}
+
+.event-info {
+  margin-bottom: 2rem;
+  flex-shrink: 0;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(98, 57, 57, 0.1);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row .label {
+  color: #623939;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.info-row .value {
+  color: #623939;
+  font-size: 1.1rem;
+}
+
+.event-details .description {
+  color: #623939;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(98, 57, 57, 0.1);
+  border-bottom: 1px solid rgba(98, 57, 57, 0.1);
+  flex: 1;
+  overflow-y: auto;
+  min-height: 100px;
+}
+
+.event-details .event-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 2rem;
+  flex-shrink: 0;
+}
+
+.price-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.price-label {
+  color: #623939;
+  font-size: 1rem;
+}
+
+.price-per-ticket {
+  color: #623939;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.total-price {
+  color: #BB5256;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.purchase-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ticket-count-select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 2px solid #BB5256;
+  border-radius: 8px;
+  background-color: white;
+  color: #623939;
+  cursor: pointer;
+  outline: none;
+  min-width: 120px;
+}
+
+.ticket-count-select:focus {
+  border-color: #623939;
+}
+
+.event-details .buy-button {
+  padding: 1rem 2rem !important;
+  font-size: 1.1rem !important;
+  background-color: #BB5256 !important;
+  color: #F3EEE8 !important;
+  border-radius: 25px !important;
+} 

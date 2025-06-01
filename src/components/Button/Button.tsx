@@ -2,17 +2,17 @@ import React from 'react';
 import './Button.css';
 
 interface ButtonProps {
-  children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'outlined';
-  onClick?: () => void;
+  variant?: 'outlined' | 'contained';
   className?: string;
+  onClick?: () => void;
+  children: React.ReactNode;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
-  children, 
-  variant = 'primary', 
-  onClick, 
-  className = '' 
+  variant = 'contained', 
+  className = '', 
+  onClick,
+  children
 }) => {
   return (
     <button 
