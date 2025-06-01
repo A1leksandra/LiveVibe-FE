@@ -100,49 +100,6 @@
   justify-content: flex-end;
 }
 
-.location-dropdown {
-  position: relative;
-  width: 150px;
-}
-
-.city-dropdown {
-  background-color: #623939;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  width: 240px;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  z-index: 9999;
-}
-
-.city-option {
-  display: block;
-  width: 100%;
-  padding: 12px 20px;
-  text-align: center;
-  border: none;
-  background: none;
-  color: #F3EEE8;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 1rem;
-  border-radius: 8px;
-  font-weight: 500;
-}
-
-.city-option:hover {
-  background-color: #BB5256;
-  color: #F3EEE8;
-  transform: translateY(-1px);
-}
-
-.city-option:active {
-  transform: translateY(0);
-}
-
 .nav-button {
   background-color: transparent !important;
   border: none !important;
@@ -209,4 +166,47 @@ nav a {
 
 .cart-button:hover svg path {
   stroke: #BB5256;
+}
+
+.location-dropdown {
+  position: relative;
+  width: 150px;
+}
+
+.city-dropdown {
+  background-color: #623939;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  width: 240px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 9999;
+}
+
+.city-option {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  text-align: center;
+  border: none;
+  background: none;
+  color: #F3EEE8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.city-option:hover {
+  background-color: #BB5256;
+  color: #F3EEE8;
+  transform: translateY(-1px);
+}
+
+.city-option:active {
+  transform: translateY(0);
 } 

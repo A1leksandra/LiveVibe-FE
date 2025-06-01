@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../Button/Button';
 import AuthModal from '../AuthModal/AuthModal';
 import CartModal from '../CartModal/CartModal';
@@ -7,6 +7,7 @@ import Portal from '../Portal/Portal';
 import './Navigation.css';
 
 const Navigation: React.FC = () => {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [selectedCity, setSelectedCity] = useState('Оберіть місто');
@@ -46,6 +47,10 @@ const Navigation: React.FC = () => {
     }
   };
 
+  const handleSearchClick = () => {
+    navigate('/events');
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
@@ -70,10 +75,11 @@ const Navigation: React.FC = () => {
         <div className="search-container">
           <input 
             type="search" 
-            placeholder="Search" 
+            placeholder="Пошук" 
             className="search-input" 
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
+            onClick={handleSearchClick}
           />
           {searchValue && (
             <button 
