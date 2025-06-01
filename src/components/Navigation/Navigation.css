@@ -1,18 +1,28 @@
 .navigation {
   background-color: #623939;
+  position: relative;
+  z-index: 1;
+}
+
+.nav-content {
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
 .logo {
+  flex: 0 0 auto;
   font-size: 1.5rem;
   font-weight: bold;
   color: #CFB7AD;
   text-decoration: none;
   transition: color 0.2s ease;
+  width: 120px;
 }
 
 .logo:hover {
@@ -21,7 +31,10 @@
 
 .search-container {
   position: relative;
-  flex: 0 1 500px;
+  flex: 1 1 auto;
+  max-width: 500px;
+  min-width: 200px;
+  margin: 0 2rem;
 }
 
 .search-input {
@@ -82,27 +95,27 @@
 .nav-buttons {
   display: flex;
   gap: 1.5rem;
+  align-items: center;
+  width: 300px;
+  justify-content: flex-end;
 }
 
 .location-dropdown {
   position: relative;
+  width: 150px;
 }
 
 .city-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
   background-color: #623939;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  z-index: 1000;
-  min-width: 240px;
+  width: 240px;
   padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  z-index: 9999;
 }
 
 .city-option {
@@ -139,6 +152,8 @@
   position: relative !important;
   border-radius: 25px !important;
   transition: background-color 0.2s ease !important;
+  width: 100%;
+  white-space: nowrap;
 }
 
 .nav-button:hover {
