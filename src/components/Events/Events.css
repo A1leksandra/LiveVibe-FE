@@ -5,5 +5,46 @@
 .events-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding-top: 3rem;
+  padding: 4rem 2rem;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+.events-page .event-card {
+  height: 520px;
+  margin-bottom: 1rem;
+}
+
+.events-page .event-item {
+  margin-bottom: 2rem;
+}
+
+.events-page .event-content {
+  height: calc(100% - 200px);
+  display: flex;
+  flex-direction: column;
+}
+
+.events-page .event-footer {
+  margin-top: auto;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .events-container {
+    padding: 2rem 1rem;
+  }
+  
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .events-page .event-card {
+    height: 480px;
+  }
 } 

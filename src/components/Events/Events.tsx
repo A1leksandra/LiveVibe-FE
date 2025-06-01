@@ -14,51 +14,51 @@ const Events: React.FC = () => {
   const allEvents = [
     {
       id: '1',
-      title: 'Jazz Night at Blue Note',
-      description: 'An evening of smooth jazz and fine dining',
-      imageUrl: jazImage,
-      date: 'Coming Soon',
-      price: '200 UAH'
+      title: 'Rock Symphony',
+      description: 'Legendary rock hits performed by a symphony orchestra. Experience your favorite songs in a new light.',
+      imageUrl: require('../../assets/theatre.jpg'),
+      date: '15 липня 2024',
+      price: '600 UAH'
     },
     {
       id: '2',
-      title: 'Theater Gala',
-      description: 'Experience the magic of live theater with our exclusive gala night.',
-      imageUrl: require('../../assets/theatre.jpg'),
-      date: 'Coming Soon',
-      price: '350 UAH'
+      title: 'Ukrainian Folk Festival',
+      description: 'A celebration of Ukrainian culture with traditional music, dance, and contemporary folk fusion.',
+      imageUrl: atlasImage,
+      date: '25 серпня 2024',
+      price: '450 UAH'
     },
     {
       id: '3',
-      title: 'Music Festival',
-      description: 'Dance to the beats and enjoy the ultimate music festival experience.',
-      imageUrl: atlasImage,
-      date: 'Coming Soon',
-      price: '400 UAH'
+      title: 'Opera Night',
+      description: 'An enchanting evening of classical opera featuring world-renowned performers.',
+      imageUrl: jazImage,
+      date: '10 вересня 2024',
+      price: '800 UAH'
     },
     {
       id: '4',
-      title: 'Один в каное',
-      description: 'Магія звучання, Щирість замість байдужості, Осінь, що відчувається влітку, Вулиця, яка лишається пустою опівночі',
-      imageUrl: odunvcanoeImage,
-      date: '18 червня 2024',
-      price: '750 UAH'
+      title: 'Electronic Music Fest',
+      description: 'A night of electronic music with top DJs and incredible visual effects.',
+      imageUrl: fankonImage,
+      date: '30 липня 2024',
+      price: '550 UAH'
     },
     {
       id: '5',
-      title: 'Symphony Night',
-      description: 'Ніч симфонічної музики під зірками. Класичні шедеври у виконанні найкращих музикантів України.',
-      imageUrl: fankonImage,
-      date: '5 квітня 2024',
-      price: '500 UAH'
+      title: 'Shakespeare in the Park',
+      description: 'Open-air theater performance of classic Shakespeare plays in a beautiful park setting.',
+      imageUrl: odunvcanoeImage,
+      date: '5 серпня 2024',
+      price: '400 UAH'
     },
     {
       id: '6',
-      title: 'Acoustic Evening',
-      description: 'Затишний вечір акустичної музики. Живе виконання, душевна атмосфера та незабутні емоції.',
+      title: 'Jazz & Wine Festival',
+      description: 'Smooth jazz performances paired with fine wine tasting experience.',
       imageUrl: palindromImage,
-      date: '20 травня 2024',
-      price: '450 UAH'
+      date: '20 серпня 2024',
+      price: '700 UAH'
     }
   ];
 
