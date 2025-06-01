@@ -1,0 +1,175 @@
+.navigation {
+  background-color: #623939;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #CFB7AD;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.logo:hover {
+  color: #BB5256;
+}
+
+.search-container {
+  position: relative;
+  flex: 0 1 500px;
+}
+
+.search-input {
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  border: none;
+  border-radius: 25px;
+  width: 100%;
+  font-size: 1rem;
+  background-color: #F3EEE8;
+  color: #623939;
+}
+
+/* Remove default clear button in IE */
+.search-input::-ms-clear,
+.search-input::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Remove default clear button in Chrome */
+.search-input::-webkit-search-decoration,
+.search-input::-webkit-search-cancel-button,
+.search-input::-webkit-search-results-button,
+.search-input::-webkit-search-results-decoration {
+  display: none;
+}
+
+.search-input::placeholder {
+  color: #623939;
+  opacity: 0.7;
+}
+
+.search-clear-button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.search-clear-button:hover {
+  background-color: rgba(98, 57, 57, 0.1);
+}
+
+.search-clear-button:active {
+  background-color: rgba(98, 57, 57, 0.2);
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.location-dropdown {
+  position: relative;
+}
+
+.city-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #623939;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  z-index: 1000;
+  min-width: 240px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.city-option {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  text-align: center;
+  border: none;
+  background: none;
+  color: #F3EEE8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.city-option:hover {
+  background-color: #BB5256;
+  color: #F3EEE8;
+  transform: translateY(-1px);
+}
+
+.city-option:active {
+  transform: translateY(0);
+}
+
+.nav-button {
+  background-color: transparent !important;
+  border: none !important;
+  color: #CFB7AD !important;
+  font-weight: 500 !important;
+  padding: 0.5rem 1.5rem !important;
+  position: relative !important;
+  border-radius: 25px !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.nav-button:hover {
+  color: #BB5256 !important;
+  background-color: rgba(187, 82, 86, 0.1) !important;
+}
+
+.nav-button::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background-color: #BB5256;
+  transition: width 0.3s ease;
+  border-radius: 1px;
+}
+
+.nav-button:hover::after {
+  width: calc(100% - 2rem);
+}
+
+nav a {
+  margin-left: 2rem;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.nav-link {
+  text-decoration: none;
+} 
