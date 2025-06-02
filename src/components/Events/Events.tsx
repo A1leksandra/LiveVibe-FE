@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import EventsGrid from '../EventsGrid/EventsGrid';
 import { eventRepository } from '../../repositories/event/eventsRepository';
 import { cityRepository } from '../../repositories/city/cityRepository';
@@ -10,8 +10,10 @@ import './Events.css';
 
 const Events: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -19,6 +21,7 @@ const Events: React.FC = () => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [isSelectingEndDate, setIsSelectingEndDate] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [cities, setCities] = useState<string[]>([]);
   const [isCitiesLoading, setIsCitiesLoading] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -89,11 +92,23 @@ const Events: React.FC = () => {
     }).format(date);
   };
 
+  // Check for search term in URL params on component mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchParam = urlParams.get('search');
+    if (searchParam) {
+      setSearchTerm(searchParam);
+    } else {
+      // Clear search term when no search parameter exists
+      setSearchTerm('');
+    }
+  }, [location.search]);
+
   const fetchEvents = useCallback(async () => {
     setIsLoading(true);
     try {
       const request: SearchEventsRequest = {
-        Title: '',
+        Title: searchTerm,
         Category: selectedCategory,
         City: selectedCity,
         DateFrom: '',
@@ -131,7 +146,7 @@ const Events: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCategory, selectedCity, startDate, endDate]);
+  }, [searchTerm, selectedCategory, selectedCity, startDate, endDate]);
 
   useEffect(() => {
     fetchEvents();
@@ -189,25 +204,32 @@ const Events: React.FC = () => {
   };
 
   const generateCalendarDays = () => {
-    const today = new Date();
-    const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
     const days: Date[] = [];
     
-    // Get the first day of the month
-    const firstDay = currentMonth.getDay();
+    // Get the first day of the week for the first day of the month
+    const firstDay = firstDayOfMonth.getDay();
     
-    // Add empty days for padding
+    // Add empty days for padding (previous month)
     for (let i = 0; i < firstDay; i++) {
       days.push(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), -firstDay + i + 1));
     }
     
     // Add all days of the current month
-    while (currentMonth.getMonth() === today.getMonth()) {
-      days.push(new Date(currentMonth.getTime()));
-      currentMonth.setDate(currentMonth.getDate() + 1);
+    for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+      days.push(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day));
     }
     
     return days;
+  };
+
+  const goToPreviousMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  };
+
+  const goToNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
   };
 
   const isToday = (date: Date) => {
@@ -234,6 +256,10 @@ const Events: React.FC = () => {
       date.getDate() === endDate.getDate() &&
       date.getMonth() === endDate.getMonth() &&
       date.getFullYear() === endDate.getFullYear();
+  };
+
+  const isOtherMonth = (date: Date) => {
+    return date.getMonth() !== currentMonth.getMonth();
   };
 
   const getDateButtonText = () => {
@@ -385,7 +411,21 @@ const Events: React.FC = () => {
                     {startDate && !endDate && 'Оберіть кінцеву дату'}
                     {startDate && endDate && 'Період обрано'}
                   </div>
-                  {new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(new Date())}
+                  <div className="month-navigation">
+                    <button className="month-nav-btn" onClick={goToPreviousMonth}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                    <span className="current-month">
+                      {new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(currentMonth)}
+                    </span>
+                    <button className="month-nav-btn" onClick={goToNextMonth}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
                 <div className="calendar-weekdays">
                   {['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'].map(day => (
@@ -400,7 +440,7 @@ const Events: React.FC = () => {
                         ${isToday(date) ? 'today' : ''} 
                         ${isStartDate(date) || isEndDate(date) ? 'selected' : ''} 
                         ${isInRange(date) && !isStartDate(date) && !isEndDate(date) ? 'in-range' : ''}
-                        ${date.getMonth() !== new Date().getMonth() ? 'other-month' : ''}`}
+                        ${isOtherMonth(date) ? 'other-month' : ''}`}
                       onClick={() => handleDateSelect(date)}
                       disabled={date < new Date(new Date().setHours(0, 0, 0, 0))}
                     >

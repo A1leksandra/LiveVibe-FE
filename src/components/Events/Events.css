@@ -70,14 +70,21 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  background-color: #F3EEE8 !important;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  padding: 1rem;
-  min-width: 250px;
-  max-height: 300px;
+  background-color: #F3EEE8;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(98, 57, 57, 0.15);
+  padding: 0;
+  min-width: 240px;
+  max-height: 280px;
   overflow-y: auto;
-  border: none;
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.city-dropdown-container::-webkit-scrollbar {
+  display: none;
 }
 
 .city-dropdown {
@@ -93,11 +100,11 @@
   text-align: left;
   color: #623939 !important;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.95rem;
-  border-radius: 8px;
-  margin-bottom: 4px;
-  font-weight: 500;
+  transition: background-color 0.15s ease;
+  font-size: 0.9rem;
+  border-radius: 0;
+  font-weight: 400;
+  margin: 0;
 }
 
 .city-dropdown-container .city-option:hover {
@@ -108,20 +115,20 @@
 .city-dropdown-container .city-option.selected {
   background-color: #BB5256 !important;
   color: #F3EEE8 !important;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .city-dropdown-container .city-option.loading {
   text-align: center;
-  color: #623939 !important;
+  color: rgba(98, 57, 57, 0.6) !important;
   cursor: default;
-  font-weight: 500;
+  font-weight: 400;
   background-color: transparent !important;
 }
 
 .city-dropdown-container .city-option.loading:hover {
   background-color: transparent !important;
-  color: #623939 !important;
+  color: rgba(98, 57, 57, 0.6) !important;
 }
 
 .calendar-icon {
@@ -176,6 +183,38 @@
   color: #623939;
   font-size: 1.1rem;
   margin-bottom: 1rem;
+}
+
+.month-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.month-nav-btn {
+  background: none;
+  border: none;
+  color: #623939;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.month-nav-btn:hover {
+  background-color: rgba(187, 82, 86, 0.1);
+  color: #BB5256;
+}
+
+.current-month {
+  font-weight: 600;
+  color: #623939;
+  min-width: 150px;
+  text-align: center;
 }
 
 .selection-info {

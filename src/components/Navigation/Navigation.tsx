@@ -13,27 +13,48 @@ const Navigation: React.FC = () => {
 
   const handleClearSearch = () => {
     setSearchValue('');
+    navigate('/events');
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchValue.trim()) {
+      navigate(`/events?search=${encodeURIComponent(searchValue.trim())}`);
+    } else {
+      navigate('/events');
+    }
   };
 
   const handleSearchClick = () => {
-    navigate('/events');
+    if (searchValue.trim()) {
+      navigate(`/events?search=${encodeURIComponent(searchValue.trim())}`);
+    } else {
+      navigate('/events');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearchSubmit(e as any);
+    }
   };
 
   return (
     <header className="navigation">
       <div className="nav-content">
         <Link to="/" className="logo">EventsHub</Link>
-        <div className="search-container">
+        <form className="search-container" onSubmit={handleSearchSubmit}>
           <input 
             type="search" 
-            placeholder="Пошук" 
+            placeholder="Пошук подій" 
             className="search-input" 
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            onClick={handleSearchClick}
+            onKeyPress={handleKeyPress}
           />
           {searchValue && (
             <button 
+              type="button"
               className="search-clear-button"
               onClick={handleClearSearch}
               aria-label="Clear search"
@@ -48,7 +69,29 @@ const Navigation: React.FC = () => {
               </svg>
             </button>
           )}
-        </div>
+          <button 
+            type="submit"
+            className="search-submit-button"
+            aria-label="Search"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path 
+                d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z" 
+                stroke="#623939" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+              <path 
+                d="M14 14L11.1 11.1" 
+                stroke="#623939" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </form>
         <nav className="nav-buttons">
           <button 
             className="cart-button"
