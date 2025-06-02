@@ -22,6 +22,13 @@ interface EventType {
   availableTickets: number;
 }
 
+type TicketCategory = 'seats' | 'fan-zone' | 'vip';
+
+interface TicketCategoryInfo {
+  name: string;
+  priceMultiplier: number;
+}
+
 const eventData: Record<EventId, EventType> = {
   '1': {
     id: '1',
@@ -95,12 +102,26 @@ const EventDetails: React.FC = () => {
   const { id } = useParams();
   const event = id && (id in eventData) ? eventData[id as EventId] : null;
   const [ticketCount, setTicketCount] = useState(1);
+  const [ticketCategory, setTicketCategory] = useState<TicketCategory>('seats');
+
+  const ticketCategories: Record<TicketCategory, TicketCategoryInfo> = {
+    'seats': { name: 'Сидячі місця', priceMultiplier: 1 },
+    'fan-zone': { name: 'Фан-зона', priceMultiplier: 1.5 },
+    'vip': { name: 'VIP зона', priceMultiplier: 2 }
+  };
+
+  const getTicketPrice = (basePrice: string, category: TicketCategory) => {
+    const priceNumber = parseInt(basePrice.split(' ')[0]);
+    const multiplier = ticketCategories[category].priceMultiplier;
+    return `${Math.round(priceNumber * multiplier)} UAH`;
+  };
 
   const totalPrice = useMemo(() => {
     if (!event) return '0 UAH';
     const priceNumber = parseInt(event.price.split(' ')[0]);
-    return `${priceNumber * ticketCount} UAH`;
-  }, [event, ticketCount]);
+    const multiplier = ticketCategories[ticketCategory].priceMultiplier;
+    return `${Math.round(priceNumber * ticketCount * multiplier)} UAH`;
+  }, [event, ticketCount, ticketCategory]);
 
   if (!event) {
     return <div className="event-details">Event not found</div>;
@@ -108,11 +129,19 @@ const EventDetails: React.FC = () => {
 
   const handleAddToCart = () => {
     // Cart logic would go here
-    console.log('Adding to cart:', { eventId: id, quantity: ticketCount });
+    console.log('Adding to cart:', { 
+      eventId: id, 
+      quantity: ticketCount,
+      category: ticketCategory 
+    });
   };
 
   const handleTicketCountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setTicketCount(Number(e.target.value));
+  };
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setTicketCategory(e.target.value as TicketCategory);
   };
 
   return (
@@ -142,7 +171,7 @@ const EventDetails: React.FC = () => {
         <div className="event-footer">
           <div className="price-info">
             <span className="price-label">Ціна за квиток:</span>
-            <span className="price-per-ticket">{event.price}</span>
+            <span className="price-per-ticket">{getTicketPrice(event.price, ticketCategory)}</span>
             {ticketCount > 1 && (
               <span className="total-price">
                 Загальна сума: {totalPrice}
@@ -150,6 +179,17 @@ const EventDetails: React.FC = () => {
             )}
           </div>
           <div className="purchase-controls">
+            <select 
+              value={ticketCategory}
+              onChange={handleCategoryChange}
+              className="ticket-category-select"
+            >
+              {Object.entries(ticketCategories).map(([value, { name }]) => (
+                <option key={value} value={value}>
+                  {name}
+                </option>
+              ))}
+            </select>
             <select 
               value={ticketCount} 
               onChange={handleTicketCountChange}

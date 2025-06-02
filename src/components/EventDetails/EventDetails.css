@@ -114,6 +114,7 @@
   gap: 1rem;
 }
 
+.ticket-category-select,
 .ticket-count-select {
   padding: 0.5rem;
   font-size: 1rem;
@@ -126,6 +127,11 @@
   min-width: 120px;
 }
 
+.ticket-category-select {
+  min-width: 150px;
+}
+
+.ticket-category-select:focus,
 .ticket-count-select:focus {
   border-color: #623939;
 }

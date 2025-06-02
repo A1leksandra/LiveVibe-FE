@@ -4,6 +4,7 @@ import Button from '../Button/Button';
 import AuthModal from '../AuthModal/AuthModal';
 import CartModal from '../CartModal/CartModal';
 import Portal from '../Portal/Portal';
+import { cityRepository } from '../../repositories/city/cityRepository';
 import './Navigation.css';
 
 const Navigation: React.FC = () => {
@@ -14,18 +15,27 @@ const Navigation: React.FC = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  const [cities, setCities] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
 
-  const cities = [
-    'Київ',
-    'Львів',
-    'Одеса',
-    'Харків',
-    'Дніпро',
-    'Запоріжжя',
-    'Вінниця',
-    'Івано-Франківськ'
-  ];
+  useEffect(() => {
+    const fetchCities = async () => {
+      setIsLoading(true);
+      try {
+        const response = await cityRepository.getAllCities();
+        if (response.isSuccess && response.data) {
+          setCities(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch cities:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   const handleClearSearch = () => {
     setSearchValue('');
@@ -166,15 +176,19 @@ const Navigation: React.FC = () => {
               transform: 'translateX(-50%)'
             }}
           >
-            {cities.map((city) => (
-              <button
-                key={city}
-                className="city-option"
-                onClick={() => handleCitySelect(city)}
-              >
-                {city}
-              </button>
-            ))}
+            {isLoading ? (
+              <div className="city-option">Loading...</div>
+            ) : (
+              cities.map((city) => (
+                <button
+                  key={city}
+                  className="city-option"
+                  onClick={() => handleCitySelect(city)}
+                >
+                  {city}
+                </button>
+              ))
+            )}
           </div>
         </Portal>
       )}
