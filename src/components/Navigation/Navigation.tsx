@@ -3,80 +3,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../Button/Button';
 import AuthModal from '../AuthModal/AuthModal';
 import CartModal from '../CartModal/CartModal';
-import Portal from '../Portal/Portal';
-import { cityRepository } from '../../repositories/city/cityRepository';
 import './Navigation.css';
 
 const Navigation: React.FC = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
-  const [isLocationOpen, setIsLocationOpen] = useState(false);
-  const [selectedCity, setSelectedCity] = useState('Оберіть місто');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-  const [cities, setCities] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const buttonRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const fetchCities = async () => {
-      setIsLoading(true);
-      try {
-        const response = await cityRepository.getAllCities();
-        if (response.isSuccess && response.data) {
-          setCities(response.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch cities:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCities();
-  }, []);
 
   const handleClearSearch = () => {
     setSearchValue('');
   };
 
-  const handleCitySelect = (city: string) => {
-    setSelectedCity(city);
-    setIsLocationOpen(false);
-  };
-
-  const toggleDropdown = () => {
-    setIsLocationOpen(!isLocationOpen);
-    if (!isLocationOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + (rect.width / 2)
-      });
-    }
-  };
-
   const handleSearchClick = () => {
     navigate('/events');
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest('.city-dropdown') && !target.closest('.location-dropdown')) {
-        setIsLocationOpen(false);
-      }
-    };
-
-    if (isLocationOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isLocationOpen]);
 
   return (
     <header className="navigation">
@@ -138,15 +79,6 @@ const Navigation: React.FC = () => {
               />
             </svg>
           </button>
-          <div className="location-dropdown" ref={buttonRef}>
-            <Button 
-              variant="outlined" 
-              className="nav-button"
-              onClick={toggleDropdown}
-            >
-              {selectedCity}
-            </Button>
-          </div>
           <Button 
             variant="outlined" 
             className="nav-button"
@@ -164,34 +96,6 @@ const Navigation: React.FC = () => {
           </Link>
         </nav>
       </div>
-
-      {isLocationOpen && (
-        <Portal>
-          <div 
-            className="city-dropdown"
-            style={{
-              position: 'absolute',
-              top: `${dropdownPosition.top}px`,
-              left: `${dropdownPosition.left}px`,
-              transform: 'translateX(-50%)'
-            }}
-          >
-            {isLoading ? (
-              <div className="city-option">Loading...</div>
-            ) : (
-              cities.map((city) => (
-                <button
-                  key={city}
-                  className="city-option"
-                  onClick={() => handleCitySelect(city)}
-                >
-                  {city}
-                </button>
-              ))
-            )}
-          </div>
-        </Portal>
-      )}
 
       <AuthModal 
         isOpen={isAuthModalOpen}

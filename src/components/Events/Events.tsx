@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EventsGrid from '../EventsGrid/EventsGrid';
 import { eventRepository } from '../../repositories/event/eventsRepository';
+import { cityRepository } from '../../repositories/city/cityRepository';
 import { Event } from '../../repositories/event/Event';
 import { SearchEventsRequest } from '../../repositories/event/SearchEventsRequest';
 import { getImageUrl } from '../../shared/utils/imageUtils';
@@ -12,18 +13,42 @@ const Events: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [isSelectingEndDate, setIsSelectingEndDate] = useState(false);
+  const [cities, setCities] = useState<string[]>([]);
+  const [isCitiesLoading, setIsCitiesLoading] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const cityDropdownRef = useRef<HTMLDivElement>(null);
+  const cityButtonRef = useRef<HTMLButtonElement>(null);
 
   const categories = [
     { label: 'Концерти', value: 'Концерт' },
     { label: 'Фестивалі', value: 'Фестиваль' },
     { label: 'Театр', value: 'Вистава' }
   ];
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      setIsCitiesLoading(true);
+      try {
+        const response = await cityRepository.getAllCities();
+        if (response.isSuccess && response.data) {
+          setCities(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch cities:', error);
+      } finally {
+        setIsCitiesLoading(false);
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -34,6 +59,15 @@ const Events: React.FC = () => {
         !buttonRef.current.contains(event.target as Node)
       ) {
         setIsDatePickerOpen(false);
+      }
+
+      if (
+        cityDropdownRef.current &&
+        cityButtonRef.current &&
+        !cityDropdownRef.current.contains(event.target as Node) &&
+        !cityButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsCityDropdownOpen(false);
       }
     };
 
@@ -61,7 +95,7 @@ const Events: React.FC = () => {
       const request: SearchEventsRequest = {
         Title: '',
         Category: selectedCategory,
-        City: '',
+        City: selectedCity,
         DateFrom: '',
         DateTo: ''
       };
@@ -97,7 +131,7 @@ const Events: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCategory, startDate, endDate]);
+  }, [selectedCategory, selectedCity, startDate, endDate]);
 
   useEffect(() => {
     fetchEvents();
@@ -107,6 +141,13 @@ const Events: React.FC = () => {
     const newCategory = selectedCategory === category ? '' : category;
     console.log('Category clicked:', category, 'Current selected:', selectedCategory, 'New category:', newCategory);
     setSelectedCategory(newCategory);
+  };
+
+  const handleCitySelect = (city: string) => {
+    const newCity = selectedCity === city ? '' : city;
+    console.log('City selected:', city, 'Current selected:', selectedCity, 'New city:', newCity);
+    setSelectedCity(newCity);
+    setIsCityDropdownOpen(false);
   };
 
   const handleDateSelect = (date: Date) => {
@@ -201,6 +242,10 @@ const Events: React.FC = () => {
     return `${formatDate(startDate)} - ${formatDate(endDate)}`;
   };
 
+  const getCityButtonText = () => {
+    return selectedCity || 'Оберіть місто';
+  };
+
   const handleEventClick = (eventId: string) => {
     navigate(`/event/${eventId}`);
   };
@@ -222,6 +267,61 @@ const Events: React.FC = () => {
             {category.label}
           </button>
         ))}
+        
+        {/* City Filter */}
+        <div className="city-filter-container">
+          <button 
+            ref={cityButtonRef}
+            className={`filter-button city-button ${selectedCity ? 'selected' : ''}`}
+            onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+          >
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 16 16" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              className="city-icon"
+            >
+              <path 
+                d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z" 
+                stroke="currentColor" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+              <path 
+                d="M8 10C9.10457 10 10 9.10457 10 8C10 6.89543 9.10457 6 8 6C6.89543 6 6 6.89543 6 8C6 9.10457 6.89543 10 8 10Z" 
+                stroke="currentColor" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+            {getCityButtonText()}
+          </button>
+          {isCityDropdownOpen && (
+            <div ref={cityDropdownRef} className="city-dropdown-container">
+              <div className="city-dropdown">
+                {isCitiesLoading ? (
+                  <div className="city-option loading">Завантаження...</div>
+                ) : (
+                  cities.map((city) => (
+                    <button
+                      key={city}
+                      className={`city-option ${selectedCity === city ? 'selected' : ''}`}
+                      onClick={() => handleCitySelect(city)}
+                    >
+                      {city}
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Date Filter */}
         <div className="date-filter-container">
           <button 
             ref={buttonRef}
