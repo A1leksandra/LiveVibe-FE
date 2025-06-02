@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CategoryButtons from '../CategoryButtons/CategoryButtons';
 import EventsGrid from '../EventsGrid/EventsGrid';
 import { eventRepository } from '../../repositories/event/eventsRepository';
 import { Event } from '../../repositories/event/Event';
@@ -12,35 +11,195 @@ const Events: React.FC = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isSelectingEndDate, setIsSelectingEndDate] = useState(false);
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const categories = [
+    { label: 'Концерти', value: 'Концерт' },
+    { label: 'Фестивалі', value: 'Фестиваль' },
+    { label: 'Театр', value: 'Вистава' }
+  ];
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      setIsLoading(true);
-      try {
-        const response = await eventRepository.searchEvents({
-          page: 1,
-          pageSize: 10,
-          request: {
-            Title: '',
-            Category: '',
-            City: '',
-            DateFrom: '',
-            DateTo: ''
-          }
-        });
-
-        if (response.isSuccess && response.data) {
-          setEvents(response.data.items);
-        }
-      } catch (error) {
-        console.error('Failed to fetch events:', error);
-      } finally {
-        setIsLoading(false);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        calendarRef.current &&
+        buttonRef.current &&
+        !calendarRef.current.contains(event.target as Node) &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsDatePickerOpen(false);
       }
     };
 
-    fetchEvents();
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
+
+  const formatDateForApi = (date: Date) => {
+    return date.toISOString().split('T')[0] + 'T00:00:00.000Z';
+  };
+
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('uk-UA', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(date);
+  };
+
+  const fetchEvents = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const request: SearchEventsRequest = {
+        Title: '',
+        Category: selectedCategory,
+        City: '',
+        DateFrom: '',
+        DateTo: ''
+      };
+
+      if (startDate) {
+        request.DateFrom = formatDateForApi(startDate);
+        console.log('Start date for API:', request.DateFrom);
+      }
+
+      if (endDate) {
+        const endOfDay = new Date(endDate);
+        endOfDay.setHours(23, 59, 59, 999);
+        request.DateTo = endOfDay.toISOString();
+        console.log('End date for API:', request.DateTo);
+      }
+
+      console.log('Fetching events with filters:', request);
+
+      const response = await eventRepository.searchEvents({
+        page: 1,
+        pageSize: 10,
+        request
+      });
+
+      if (response.isSuccess && response.data) {
+        console.log('Received events:', response.data.items.length);
+        setEvents(response.data.items);
+      } else {
+        console.log('API Error:', response.error);
+      }
+    } catch (error) {
+      console.error('Failed to fetch events:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedCategory, startDate, endDate]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
+  const handleCategoryClick = (category: string) => {
+    const newCategory = selectedCategory === category ? '' : category;
+    console.log('Category clicked:', category, 'Current selected:', selectedCategory, 'New category:', newCategory);
+    setSelectedCategory(newCategory);
+  };
+
+  const handleDateSelect = (date: Date) => {
+    console.log('Date selected:', date);
+    
+    if (!startDate) {
+      // First click - select start date
+      console.log('Setting start date:', date);
+      setStartDate(date);
+      setEndDate(null);
+      setIsSelectingEndDate(true);
+    } else if (!endDate || !isSelectingEndDate) {
+      // Second click - select end date
+      if (date >= startDate) {
+        console.log('Setting end date:', date);
+        setEndDate(date);
+        setIsDatePickerOpen(false);
+        setIsSelectingEndDate(false);
+      } else {
+        // If end date is before start date, make it the new start date
+        console.log('End date before start, resetting with new start date:', date);
+        setStartDate(date);
+        setEndDate(null);
+        setIsSelectingEndDate(true);
+      }
+    } else {
+      // Third click or reset - start over
+      console.log('Resetting dates, new start date:', date);
+      setStartDate(date);
+      setEndDate(null);
+      setIsSelectingEndDate(true);
+    }
+  };
+
+  const clearDates = () => {
+    setStartDate(null);
+    setEndDate(null);
+    setIsSelectingEndDate(false);
+  };
+
+  const generateCalendarDays = () => {
+    const today = new Date();
+    const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const days: Date[] = [];
+    
+    // Get the first day of the month
+    const firstDay = currentMonth.getDay();
+    
+    // Add empty days for padding
+    for (let i = 0; i < firstDay; i++) {
+      days.push(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), -firstDay + i + 1));
+    }
+    
+    // Add all days of the current month
+    while (currentMonth.getMonth() === today.getMonth()) {
+      days.push(new Date(currentMonth.getTime()));
+      currentMonth.setDate(currentMonth.getDate() + 1);
+    }
+    
+    return days;
+  };
+
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear();
+  };
+
+  const isInRange = (date: Date) => {
+    if (!startDate || !endDate) return false;
+    return date >= startDate && date <= endDate;
+  };
+
+  const isStartDate = (date: Date) => {
+    return startDate &&
+      date.getDate() === startDate.getDate() &&
+      date.getMonth() === startDate.getMonth() &&
+      date.getFullYear() === startDate.getFullYear();
+  };
+
+  const isEndDate = (date: Date) => {
+    return endDate &&
+      date.getDate() === endDate.getDate() &&
+      date.getMonth() === endDate.getMonth() &&
+      date.getFullYear() === endDate.getFullYear();
+  };
+
+  const getDateButtonText = () => {
+    if (!startDate) return 'Обрати період';
+    if (!endDate) return `З ${formatDate(startDate)}`;
+    return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+  };
 
   const handleEventClick = (eventId: string) => {
     navigate(`/event/${eventId}`);
@@ -52,7 +211,109 @@ const Events: React.FC = () => {
 
   return (
     <div className="events-page">
-      <CategoryButtons />
+      {/* Filter Buttons */}
+      <div className="filter-buttons">
+        {categories.map(category => (
+          <button
+            key={category.value}
+            className={`filter-button ${selectedCategory === category.value ? 'selected' : ''}`}
+            onClick={() => handleCategoryClick(category.value)}
+          >
+            {category.label}
+          </button>
+        ))}
+        <div className="date-filter-container">
+          <button 
+            ref={buttonRef}
+            className="filter-button date-button" 
+            onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+          >
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 16 16" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              className="calendar-icon"
+            >
+              <path 
+                d="M12.6667 2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V13.3333C2 14.0697 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0697 14 13.3333V4C14 3.26362 13.403 2.66667 12.6667 2.66667Z" 
+                stroke="currentColor" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+              <path 
+                d="M2 6.66667H14" 
+                stroke="currentColor" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+              <path 
+                d="M5.33333 1.33333V4" 
+                stroke="currentColor" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+              <path 
+                d="M10.6667 1.33333V4" 
+                stroke="currentColor" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+            {getDateButtonText()}
+          </button>
+          {(startDate || endDate) && (
+            <button 
+              className="clear-dates-btn"
+              onClick={clearDates}
+              title="Очистити дати"
+            >
+              ×
+            </button>
+          )}
+          {isDatePickerOpen && (
+            <div ref={calendarRef} className="date-picker-container">
+              <div className="calendar">
+                <div className="calendar-header">
+                  <div className="selection-info">
+                    {!startDate && 'Оберіть початкову дату'}
+                    {startDate && !endDate && 'Оберіть кінцеву дату'}
+                    {startDate && endDate && 'Період обрано'}
+                  </div>
+                  {new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(new Date())}
+                </div>
+                <div className="calendar-weekdays">
+                  {['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'].map(day => (
+                    <div key={day} className="weekday">{day}</div>
+                  ))}
+                </div>
+                <div className="calendar-days">
+                  {generateCalendarDays().map((date, index) => (
+                    <button
+                      key={index}
+                      className={`calendar-day 
+                        ${isToday(date) ? 'today' : ''} 
+                        ${isStartDate(date) || isEndDate(date) ? 'selected' : ''} 
+                        ${isInRange(date) && !isStartDate(date) && !isEndDate(date) ? 'in-range' : ''}
+                        ${date.getMonth() !== new Date().getMonth() ? 'other-month' : ''}`}
+                      onClick={() => handleDateSelect(date)}
+                      disabled={date < new Date(new Date().setHours(0, 0, 0, 0))}
+                    >
+                      {date.getDate()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       <EventsGrid
         events={events.map(event => ({
           id: event.id,
