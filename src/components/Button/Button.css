@@ -9,6 +9,12 @@
   font-weight: 500;
 }
 
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .button.primary {
   background-color: #BB5256;
   color: #F3EEE8;

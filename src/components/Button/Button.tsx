@@ -6,18 +6,21 @@ interface ButtonProps {
   className?: string;
   onClick?: () => void;
   children: React.ReactNode;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
   variant = 'contained', 
   className = '', 
   onClick,
-  children
+  children,
+  disabled = false
 }) => {
   return (
     <button 
       className={`button ${variant} ${className}`}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>

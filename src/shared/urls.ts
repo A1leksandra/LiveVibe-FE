@@ -6,4 +6,5 @@ export const urls = {
     getAllCities: '/cities/all',
     // Events
     searchEvents: '/events/search',
+    getEventById: (id: string) => `/events/${id}`,
 } as const; 

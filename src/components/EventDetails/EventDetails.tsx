@@ -1,214 +1,238 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../Button/Button';
+import { eventRepository } from '../../repositories/event/eventsRepository';
+import { EventDetails as EventDetailsType, SeatType } from '../../repositories/event/EventDetails';
+import { getImageUrl } from '../../shared/utils/imageUtils';
 import './EventDetails.css';
-import jazImage from '../../assets/jaz.jpg';
-import atlasImage from '../../assets/atlas.jpg';
-import odunvcanoeImage from '../../assets/odunvcanoe.jpg';
-import fankonImage from '../../assets/fankon.jpg';
-import palindromImage from '../../assets/palindrom.jpg';
-
-type EventId = '1' | '2' | '3' | '4' | '5' | '6';
-
-interface EventType {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  date: string;
-  price: string;
-  location: string;
-  time: string;
-  availableTickets: number;
-}
-
-type TicketCategory = 'seats' | 'fan-zone' | 'vip';
-
-interface TicketCategoryInfo {
-  name: string;
-  priceMultiplier: number;
-}
-
-const eventData: Record<EventId, EventType> = {
-  '1': {
-    id: '1',
-    title: 'Jazz Night at Blue Note',
-    description: 'An evening of smooth jazz and fine dining',
-    imageUrl: jazImage,
-    date: 'Coming Soon',
-    price: '200 UAH',
-    location: 'Blue Note Jazz Club, Київ',
-    time: '19:00',
-    availableTickets: 150
-  },
-  '2': {
-    id: '2',
-    title: 'Theater Gala',
-    description: 'Experience the magic of live theater with our exclusive gala night.',
-    imageUrl: require('../../assets/theatre.jpg'),
-    date: 'Coming Soon',
-    price: '350 UAH',
-    location: 'National Theater, Київ',
-    time: '18:30',
-    availableTickets: 200
-  },
-  '3': {
-    id: '3',
-    title: 'Music Festival',
-    description: 'Dance to the beats and enjoy the ultimate music festival experience.',
-    imageUrl: atlasImage,
-    date: 'Coming Soon',
-    price: '400 UAH',
-    location: 'Atlas Arena, Київ',
-    time: '16:00',
-    availableTickets: 500
-  },
-  '4': {
-    id: '4',
-    title: 'Один в каное',
-    description: 'Магія звучання, Щирість замість байдужості, Осінь, що відчувається влітку, Вулиця, яка лишається пустою опівночі',
-    imageUrl: odunvcanoeImage,
-    date: '18 червня 2024',
-    price: '750 UAH',
-    location: 'Stereo Plaza, Київ',
-    time: '20:00',
-    availableTickets: 300
-  },
-  '5': {
-    id: '5',
-    title: 'Symphony Night',
-    description: 'Ніч симфонічної музики під зірками. Класичні шедеври у виконанні найкращих музикантів України.',
-    imageUrl: fankonImage,
-    date: '5 квітня 2024',
-    price: '500 UAH',
-    location: 'Національна Філармонія України, Київ',
-    time: '19:30',
-    availableTickets: 250
-  },
-  '6': {
-    id: '6',
-    title: 'Acoustic Evening',
-    description: 'Затишний вечір акустичної музики. Живе виконання, душевна атмосфера та незабутні емоції.',
-    imageUrl: palindromImage,
-    date: '20 травня 2024',
-    price: '450 UAH',
-    location: 'Caribbean Club, Київ',
-    time: '20:00',
-    availableTickets: 180
-  }
-};
 
 const EventDetails: React.FC = () => {
-  const { id } = useParams();
-  const event = id && (id in eventData) ? eventData[id as EventId] : null;
+  const { id } = useParams<{ id: string }>();
+  const [event, setEvent] = useState<EventDetailsType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [ticketCount, setTicketCount] = useState(1);
-  const [ticketCategory, setTicketCategory] = useState<TicketCategory>('seats');
+  const [selectedSeatType, setSelectedSeatType] = useState<string>('');
 
-  const ticketCategories: Record<TicketCategory, TicketCategoryInfo> = {
-    'seats': { name: 'Сидячі місця', priceMultiplier: 1 },
-    'fan-zone': { name: 'Фан-зона', priceMultiplier: 1.5 },
-    'vip': { name: 'VIP зона', priceMultiplier: 2 }
-  };
+  useEffect(() => {
+    const fetchEvent = async () => {
+      if (!id) {
+        setError('Event ID not provided');
+        setIsLoading(false);
+        return;
+      }
 
-  const getTicketPrice = (basePrice: string, category: TicketCategory) => {
-    const priceNumber = parseInt(basePrice.split(' ')[0]);
-    const multiplier = ticketCategories[category].priceMultiplier;
-    return `${Math.round(priceNumber * multiplier)} UAH`;
-  };
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await eventRepository.getById(id);
+        
+        if (response.isSuccess && response.data) {
+          setEvent(response.data);
+          // Set the first available seat type as default
+          if (response.data.seatTypes.length > 0) {
+            setSelectedSeatType(response.data.seatTypes[0].id);
+          }
+        } else {
+          setError(response.error?.message || 'Failed to fetch event details');
+        }
+      } catch (error) {
+        console.error('Error fetching event:', error);
+        setError('An unexpected error occurred');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [id]);
+
+  const selectedSeat = useMemo(() => {
+    return event?.seatTypes.find(seat => seat.id === selectedSeatType);
+  }, [event, selectedSeatType]);
 
   const totalPrice = useMemo(() => {
-    if (!event) return '0 UAH';
-    const priceNumber = parseInt(event.price.split(' ')[0]);
-    const multiplier = ticketCategories[ticketCategory].priceMultiplier;
-    return `${Math.round(priceNumber * ticketCount * multiplier)} UAH`;
-  }, [event, ticketCount, ticketCategory]);
+    if (!selectedSeat) return 0;
+    return selectedSeat.price * ticketCount;
+  }, [selectedSeat, ticketCount]);
 
-  if (!event) {
-    return <div className="event-details">Event not found</div>;
-  }
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('uk-UA', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(date);
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('uk-UA', {
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  };
 
   const handleAddToCart = () => {
-    // Cart logic would go here
-    console.log('Adding to cart:', { 
-      eventId: id, 
+    if (!event || !selectedSeat) return;
+    
+    console.log('Adding to cart:', {
+      eventId: event.id,
+      eventTitle: event.title,
+      seatTypeId: selectedSeat.id,
+      seatTypeName: selectedSeat.name,
       quantity: ticketCount,
-      category: ticketCategory 
+      pricePerTicket: selectedSeat.price,
+      totalPrice: totalPrice
     });
+    
+    // TODO: Implement actual cart logic
+    alert(`Додано до кошика: ${ticketCount} квиток(ів) на ${event.title}`);
   };
 
   const handleTicketCountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setTicketCount(Number(e.target.value));
   };
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setTicketCategory(e.target.value as TicketCategory);
+  const handleSeatTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSeatType(e.target.value);
   };
+
+  if (isLoading) {
+    return (
+      <div className="event-details">
+        <div className="loading">Завантаження...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="event-details">
+        <div className="error">Помилка: {error}</div>
+      </div>
+    );
+  }
+
+  if (!event) {
+    return (
+      <div className="event-details">
+        <div className="error">Подія не знайдена</div>
+      </div>
+    );
+  }
+
+  const maxTickets = selectedSeat ? Math.min(10, selectedSeat.availableSeats) : 0;
 
   return (
     <div className="event-details">
       <div className="event-details-content">
-        <img src={event.imageUrl} alt={event.title} className="event-image" />
+        <img 
+          src={getImageUrl(event.imageUrl)} 
+          alt={event.title} 
+          className="event-image" 
+        />
         <h1>{event.title}</h1>
         <div className="event-info">
           <div className="info-row">
             <span className="label">Дата:</span>
-            <span className="value">{event.date}</span>
+            <span className="value">{formatDate(event.time)}</span>
           </div>
           <div className="info-row">
             <span className="label">Час:</span>
-            <span className="value">{event.time}</span>
+            <span className="value">{formatTime(event.time)}</span>
           </div>
           <div className="info-row">
             <span className="label">Місце проведення:</span>
             <span className="value">{event.location}</span>
           </div>
           <div className="info-row">
-            <span className="label">Доступно квитків:</span>
-            <span className="value">{event.availableTickets}</span>
+            <span className="label">Місто:</span>
+            <span className="value">{event.city}</span>
           </div>
+          <div className="info-row">
+            <span className="label">Організатор:</span>
+            <span className="value">{event.organizer}</span>
+          </div>
+          <div className="info-row">
+            <span className="label">Категорія:</span>
+            <span className="value">{event.category}</span>
+          </div>
+          {selectedSeat && (
+            <div className="info-row">
+              <span className="label">Доступно квитків:</span>
+              <span className="value">{selectedSeat.availableSeats} з {selectedSeat.capacity}</span>
+            </div>
+          )}
         </div>
         <p className="description">{event.description}</p>
+        
+        {event.seatTypes.length > 0 && (
+          <div className="seat-types-section">
+            <h3>Типи місць</h3>
+            <div className="seat-types-grid">
+              {event.seatTypes.map((seatType) => (
+                <div 
+                  key={seatType.id} 
+                  className={`seat-type-card ${selectedSeatType === seatType.id ? 'selected' : ''}`}
+                  onClick={() => setSelectedSeatType(seatType.id)}
+                >
+                  <h4>{seatType.name}</h4>
+                  <p className="seat-price">{seatType.price} UAH</p>
+                  <p className="seat-availability">
+                    Доступно: {seatType.availableSeats} з {seatType.capacity}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="event-footer">
           <div className="price-info">
-            <span className="price-label">Ціна за квиток:</span>
-            <span className="price-per-ticket">{getTicketPrice(event.price, ticketCategory)}</span>
-            {ticketCount > 1 && (
-              <span className="total-price">
-                Загальна сума: {totalPrice}
-              </span>
+            {selectedSeat && (
+              <>
+                <span className="price-label">Ціна за квиток:</span>
+                <span className="price-per-ticket">{selectedSeat.price} UAH</span>
+                {ticketCount > 1 && (
+                  <span className="total-price">
+                    Загальна сума: {totalPrice} UAH
+                  </span>
+                )}
+              </>
             )}
           </div>
-          <div className="purchase-controls">
-            <select 
-              value={ticketCategory}
-              onChange={handleCategoryChange}
-              className="ticket-category-select"
-            >
-              {Object.entries(ticketCategories).map(([value, { name }]) => (
-                <option key={value} value={value}>
-                  {name}
-                </option>
-              ))}
-            </select>
-            <select 
-              value={ticketCount} 
-              onChange={handleTicketCountChange}
-              className="ticket-count-select"
-            >
-              {[...Array(Math.min(10, event.availableTickets))].map((_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {i + 1} {i === 0 ? 'квиток' : i < 4 ? 'квитки' : 'квитків'}
-                </option>
-              ))}
-            </select>
-            <Button 
-              variant="contained" 
-              className="buy-button"
-              onClick={handleAddToCart}
-            >
-              Додати в кошик
-            </Button>
-          </div>
+          
+          {event.seatTypes.length > 0 && selectedSeat && (
+            <div className="purchase-controls">
+              <select 
+                value={ticketCount} 
+                onChange={handleTicketCountChange}
+                className="ticket-count-select"
+                disabled={maxTickets === 0}
+              >
+                {maxTickets === 0 ? (
+                  <option value={0}>Немає доступних квитків</option>
+                ) : (
+                  [...Array(maxTickets)].map((_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1} {i === 0 ? 'квиток' : i < 4 ? 'квитки' : 'квитків'}
+                    </option>
+                  ))
+                )}
+              </select>
+              
+              <Button 
+                variant="contained" 
+                className="buy-button"
+                onClick={handleAddToCart}
+                disabled={maxTickets === 0}
+              >
+                Додати в кошик
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
