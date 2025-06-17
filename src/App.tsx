@@ -6,6 +6,8 @@ import EventsGrid from './components/EventsGrid/EventsGrid';
 import MyTickets from './components/MyTickets/MyTickets';
 import EventDetails from './components/EventDetails/EventDetails';
 import Events from './components/Events/Events';
+import OrderConfirmation from './pages/OrderConfirmation/OrderConfirmation';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { CartProvider } from './contexts/CartContext';
 import atlasImage from './assets/atlas.jpg';
 import jazImage from './assets/jaz.jpg';
@@ -106,6 +108,14 @@ const App: React.FC = () => {
             <Route path="/events" element={<Events />} />
             <Route path="/my-tickets" element={<MyTickets />} />
             <Route path="/event/:id" element={<EventDetails />} />
+            <Route 
+              path="/order-confirmation" 
+              element={
+                <ProtectedRoute>
+                  <OrderConfirmation />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </div>
       </BrowserRouter>
