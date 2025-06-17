@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useAuth } from '../../features/auth/store/auth.store';
+//import { useAuth } from '../../features/auth/store/auth.store';
 
 axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -7,18 +7,18 @@ axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL + '/api';
 const axiosInstance = axios.create();
 
 //Request interceptor
-axiosInstance.interceptors.request.use(request => {
-    const accessToken = useAuth.getState().accessToken;
+// axiosInstance.interceptors.request.use(request => {
+//     const accessToken = useAuth.getState().accessToken;
 
-    if (accessToken) {
-        request.headers['Authorization'] = `Bearer ${accessToken}`;
-    }
+//     if (accessToken) {
+//         request.headers['Authorization'] = `Bearer ${accessToken}`;
+//     }
 
-    if (!(request.data instanceof FormData)) {
-        request.headers['Content-Type'] = 'application/json';
-    }
+//     if (!(request.data instanceof FormData)) {
+//         request.headers['Content-Type'] = 'application/json';
+//     }
 
-    return request;
-}, error => Promise.reject(error));
+//     return request;
+// }, error => Promise.reject(error));
 
 export default axiosInstance; 

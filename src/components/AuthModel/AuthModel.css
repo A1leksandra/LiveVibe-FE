@@ -148,6 +148,17 @@
   transform: translateY(0);
 }
 
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submit-button:disabled:hover {
+  opacity: 0.6;
+  transform: none;
+}
+
 .forgot-password {
   background: none;
   border: none;

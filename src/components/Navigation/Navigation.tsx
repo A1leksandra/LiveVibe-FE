@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Button from '../Button/Button';
-import AuthModal from '../AuthModal/AuthModal';
+import AuthModel from '../AuthModel/AuthModel';
 import CartModal from '../CartModal/CartModal';
 import { useCart } from '../../contexts/CartContext';
 import './Navigation.css';
@@ -179,7 +179,7 @@ const Navigation: React.FC = () => {
         </nav>
       </div>
 
-      <AuthModal 
+      <AuthModel 
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
       />
