@@ -6,6 +6,7 @@ import EventsGrid from './components/EventsGrid/EventsGrid';
 import MyTickets from './components/MyTickets/MyTickets';
 import EventDetails from './components/EventDetails/EventDetails';
 import Events from './components/Events/Events';
+import { CartProvider } from './contexts/CartContext';
 import atlasImage from './assets/atlas.jpg';
 import jazImage from './assets/jaz.jpg';
 import odunvcanoeImage from './assets/odunvcanoe.jpg';
@@ -96,17 +97,19 @@ const HomePage = () => {
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <div className="App">
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/my-tickets" element={<MyTickets />} />
-          <Route path="/event/:id" element={<EventDetails />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <CartProvider>
+      <BrowserRouter>
+        <div className="App">
+          <Navigation />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/my-tickets" element={<MyTickets />} />
+            <Route path="/event/:id" element={<EventDetails />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </CartProvider>
   );
 };
 

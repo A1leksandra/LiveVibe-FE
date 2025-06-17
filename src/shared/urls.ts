@@ -1,7 +1,7 @@
 export const urls = {
     // Auth
-    signIn: '/auth/sign-in',
-    signUp: '/auth/sign-up',
+    register: '/api/users/register',
+    login: '/api/users/login',
     // Cities
     getAllCities: '/cities/all',
     // Events

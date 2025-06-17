@@ -96,10 +96,16 @@ const Events: React.FC = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchParam = urlParams.get('search');
+    console.log('Events: URL parameters changed:', location.search);
+    console.log('Events: Search parameter from URL:', searchParam);
+    console.log('Events: Current searchTerm state:', searchTerm);
+    
     if (searchParam) {
+      console.log('Events: Setting searchTerm to:', searchParam);
       setSearchTerm(searchParam);
     } else {
       // Clear search term when no search parameter exists
+      console.log('Events: Clearing searchTerm (no URL parameter)');
       setSearchTerm('');
     }
   }, [location.search]);

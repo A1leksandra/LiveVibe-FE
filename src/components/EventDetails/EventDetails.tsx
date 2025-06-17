@@ -4,10 +4,12 @@ import Button from '../Button/Button';
 import { eventRepository } from '../../repositories/event/eventsRepository';
 import { EventDetails as EventDetailsType, SeatType } from '../../repositories/event/EventDetails';
 import { getImageUrl } from '../../shared/utils/imageUtils';
+import { useCart } from '../../contexts/CartContext';
 import './EventDetails.css';
 
 const EventDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { addToCart } = useCart();
   const [event, setEvent] = useState<EventDetailsType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,17 +79,19 @@ const EventDetails: React.FC = () => {
   const handleAddToCart = () => {
     if (!event || !selectedSeat) return;
     
-    console.log('Adding to cart:', {
+    addToCart({
       eventId: event.id,
       eventTitle: event.title,
+      eventImage: event.imageUrl,
       seatTypeId: selectedSeat.id,
       seatTypeName: selectedSeat.name,
       quantity: ticketCount,
       pricePerTicket: selectedSeat.price,
-      totalPrice: totalPrice
+      totalPrice: totalPrice,
+      eventDate: event.time,
+      eventLocation: event.location
     });
     
-    // TODO: Implement actual cart logic
     alert(`Додано до кошика: ${ticketCount} квиток(ів) на ${event.title}`);
   };
 
