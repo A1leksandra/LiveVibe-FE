@@ -1,0 +1,102 @@
+.user-profile {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #BB5256;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: #F3EEE8;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    min-width: 240px;
+    z-index: 1000;
+    padding: 16px;
+}
+
+.profile-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(98, 57, 57, 0.1);
+    margin-bottom: 12px;
+}
+
+.profile-name {
+    font-weight: 600;
+    color: #623939;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.profile-email {
+    color: #623939;
+    opacity: 0.7;
+    font-size: 14px;
+}
+
+.profile-info {
+    padding: 12px 0;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #623939;
+}
+
+.info-item .label {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.info-item .value {
+    font-size: 14px;
+}
+
+.profile-actions {
+    padding-top: 12px;
+    border-top: 1px solid rgba(98, 57, 57, 0.1);
+}
+
+.logout-button {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid #BB5256;
+    color: #BB5256;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+    background-color: #BB5256;
+    color: white;
+} 

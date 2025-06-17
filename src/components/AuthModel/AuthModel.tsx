@@ -23,6 +23,25 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const clearForm = () => {
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setFirstName('');
+    setLastName('');
+    setPhone('');
+    setPasswordError('');
+    setApiError('');
+  };
+
+  const handleAuthSuccess = (token: string) => {
+    localStorage.setItem('authToken', token);
+    clearForm();
+    // Close the modal first
+    onClose();
+    // Use setTimeout to allow the request to complete and be visible in network tab
+  };
+
   const validatePasswords = () => {
     if (password !== confirmPassword) {
       setPasswordError('Паролі не співпадають');
@@ -44,13 +63,12 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
           password
         };
         
+        console.log('Sending login request:', loginRequest);
         const response = await authRepository.login(loginRequest);
+        console.log('Login response:', response);
         
         if (response.isSuccess && response.data) {
-          // Store token in localStorage
-          localStorage.setItem('authToken', response.data.token);
-          console.log('Login successful', response.data);
-          onClose(); // Close modal on successful login
+          handleAuthSuccess(response.data.token);
         } else {
           setApiError(response.error?.message || 'Помилка входу');
         }
@@ -68,20 +86,19 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
           password
         };
         
+        console.log('Sending register request:', registerRequest);
         const response = await authRepository.register(registerRequest);
+        console.log('Register response:', response);
         
         if (response.isSuccess && response.data) {
-          // Store token in localStorage
-          localStorage.setItem('authToken', response.data.token);
-          console.log('Registration successful', response.data);
-          onClose(); // Close modal on successful registration
+          handleAuthSuccess(response.data.token);
         } else {
           setApiError(response.error?.message || 'Помилка реєстрації');
         }
       }
     } catch (error) {
-      setApiError('Виникла несподівана помилка');
       console.error('Auth error:', error);
+      setApiError('Виникла несподівана помилка');
     } finally {
       setIsLoading(false);
     }
@@ -89,14 +106,7 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
 
   const handleTabChange = (login: boolean) => {
     setIsLogin(login);
-    setPasswordError('');
-    setApiError('');
-    if (login) {
-      setConfirmPassword('');
-      setFirstName('');
-      setLastName('');
-      setPhone('');
-    }
+    clearForm();
   };
 
   return (

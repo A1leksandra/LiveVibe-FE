@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Button from '../Button/Button';
 import AuthModel from '../AuthModel/AuthModel';
 import CartModal from '../CartModal/CartModal';
+import UserProfile from '../UserProfile/UserProfile';
 import { useCart } from '../../contexts/CartContext';
 import './Navigation.css';
 
@@ -13,6 +14,17 @@ const Navigation: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const token = localStorage.getItem('authToken');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
 
   // Sync search input with URL parameters
   useEffect(() => {
@@ -161,13 +173,19 @@ const Navigation: React.FC = () => {
               )}
             </button>
           </div>
-          <Button 
-            variant="outlined" 
-            className="nav-button"
-            onClick={() => setIsAuthModalOpen(true)}
-          >
-            Увійти
-          </Button>
+          
+          {isAuthenticated ? (
+            <UserProfile onLogout={handleLogout} />
+          ) : (
+            <Button 
+              variant="outlined" 
+              className="nav-button"
+              onClick={() => setIsAuthModalOpen(true)}
+            >
+              Увійти
+            </Button>
+          )}
+
           <Link to="/my-tickets" className="nav-link">
             <Button 
               variant="outlined" 
@@ -181,7 +199,12 @@ const Navigation: React.FC = () => {
 
       <AuthModel 
         isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          // Check auth status after modal closes
+          const token = localStorage.getItem('authToken');
+          setIsAuthenticated(!!token);
+        }}
       />
       <CartModal
         isOpen={isCartModalOpen}
