@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation';
 import Hero from './components/Hero/Hero';
@@ -9,11 +9,9 @@ import OrderConfirmation from './pages/OrderConfirmation/OrderConfirmation';
 import MyTickets from './pages/MyTickets/MyTickets';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { CartProvider } from './contexts/CartContext';
-import atlasImage from './assets/atlas.jpg';
-import jazImage from './assets/jaz.jpg';
-import odunvcanoeImage from './assets/odunvcanoe.jpg';
-import fankonImage from './assets/fankon.jpg';
-import palindromImage from './assets/palindrom.jpg';
+import { eventRepository } from './repositories/event/eventsRepository';
+import { Event } from './repositories/event/Event';
+import { getImageUrl } from './shared/utils/imageUtils';
 import './App.css';
 
 // Import images
@@ -21,76 +19,62 @@ import './App.css';
 // const atlasImg = require('./assets/atlas.jpg');
 
 const HomePage = () => {
-  const featuredEvents = [
-    {
-      id: '1',
-      title: 'Jazz Night at Blue Note',
-      description: 'An evening of smooth jazz and fine dining',
-      imageUrl: jazImage,
-      buttonText: 'View Details',
-      price: '200 UAH'
-    },
-    {
-      id: '2',
-      title: 'Theater Gala',
-      description: 'Experience the magic of live theater with our exclusive gala night.',
-      imageUrl: require('./assets/theatre.jpg'),
-      buttonText: 'View Details',
-      price: '350 UAH'
-    },
-    {
-      id: '3',
-      title: 'Music Festival',
-      description: 'Dance to the beats and enjoy the ultimate music festival experience.',
-      imageUrl: atlasImage,
-      buttonText: 'View Details',
-      price: '400 UAH'
-    }
-  ];
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const upcomingConcerts = [
-    {
-      id: '4',
-      title: 'Один в каное',
-      description: 'Магія звучання, Щирість замість байдужості, Осінь, що відчувається влітку, Вулиця, яка лишається пустою опівночі, ',
-      imageUrl: odunvcanoeImage,
-      date: '18 червня 2024',
-      buttonText: 'Купити квиток',
-      price: '750 UAH'
-    },
-    {
-      id: '5',
-      title: 'Symphony Night',
-      description: 'Ніч симфонічної музики під зірками. Класичні шедеври у виконанні найкращих музикантів України.',
-      imageUrl: fankonImage,
-      date: '5 квітня 2024',
-      buttonText: 'Купити квиток',
-      price: '500 UAH'
-    },
-    {
-      id: '6',
-      title: 'Acoustic Evening',
-      description: 'Затишний вечір акустичної музики. Живе виконання, душевна атмосфера та незабутні емоції.',
-      imageUrl: palindromImage,
-      date: '20 травня 2024',
-      buttonText: 'Купити квиток',
-      price: '450 UAH'
-    }
-  ];
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await eventRepository.searchEvents({
+          page: 1,
+          pageSize: 6,
+          request: {
+            Title: '',
+            Category: '',
+            City: '',
+            DateFrom: '',
+            DateTo: '',
+            OrderByDate: true
+          }
+        });
+
+        if (response.isSuccess && response.data) {
+          setEvents(response.data.items);
+        }
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const handleEventClick = (eventId: string) => {
     console.log(`Event clicked: ${eventId}`);
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <Hero />
       <EventsGrid
-        events={featuredEvents}
-        onEventClick={handleEventClick}
-      />
-      <EventsGrid
-        events={upcomingConcerts}
+        events={events.map(event => ({
+          id: event.id,
+          title: event.title,
+          description: event.description,
+          imageUrl: getImageUrl(event.imageUrl),
+          date: new Date(event.time).toLocaleDateString('uk-UA', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+          }),
+          price: `${event.matchedSeatCategoryPrice} UAH`
+        }))}
         onEventClick={handleEventClick}
       />
     </>

@@ -4,4 +4,5 @@ export interface SearchEventsRequest {
     City: string;
     DateFrom: string;
     DateTo: string;
+    OrderByDate: boolean;
 }

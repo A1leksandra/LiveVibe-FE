@@ -118,7 +118,8 @@ const Events: React.FC = () => {
         Category: selectedCategory,
         City: selectedCity,
         DateFrom: '',
-        DateTo: ''
+        DateTo: '',
+        OrderByDate: false
       };
 
       if (startDate) {
