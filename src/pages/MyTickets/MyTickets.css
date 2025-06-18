@@ -1,0 +1,139 @@
+.tickets-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.tickets-container h1 {
+    color: #623939;
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
+.tickets-loading,
+.tickets-error,
+.no-tickets {
+    text-align: center;
+    padding: 2rem;
+    color: #623939;
+    font-size: 1.125rem;
+}
+
+.tickets-error {
+    color: #BB5256;
+}
+
+.tickets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.ticket-card {
+    background: #F3EEE8;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ticket-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(98, 57, 57, 0.1);
+}
+
+.ticket-header {
+    text-align: center;
+}
+
+.ticket-event-name {
+    color: #623939;
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 0.375rem;
+    line-height: 1.2;
+}
+
+.ticket-seat {
+    color: #BB5256;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    margin-bottom: 0.25rem;
+}
+
+.ticket-qr {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1;
+    margin: 0.5rem 0;
+}
+
+.qr-svg-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qr-svg-container svg {
+    width: 100%;
+    height: 100%;
+    max-width: 180px;
+    max-height: 180px;
+}
+
+.qr-loading {
+    color: #623939;
+    opacity: 0.7;
+    font-size: 0.875rem;
+}
+
+.ticket-footer {
+    text-align: center;
+}
+
+.ticket-date {
+    color: #623939;
+    opacity: 0.8;
+    font-size: 0.8125rem;
+}
+
+@media (max-width: 768px) {
+    .tickets-container {
+        margin: 1rem auto;
+    }
+
+    .tickets-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+
+    .ticket-card {
+        padding: 1rem;
+    }
+
+    .ticket-qr {
+        padding: 1rem;
+    }
+
+    .qr-svg-container svg {
+        max-width: 140px;
+        max-height: 140px;
+    }
+
+    .ticket-event-name {
+        font-size: 1rem;
+    }
+
+    .ticket-seat {
+        font-size: 0.875rem;
+    }
+} 

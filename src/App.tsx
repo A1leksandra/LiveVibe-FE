@@ -3,10 +3,10 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation';
 import Hero from './components/Hero/Hero';
 import EventsGrid from './components/EventsGrid/EventsGrid';
-import MyTickets from './components/MyTickets/MyTickets';
 import EventDetails from './components/EventDetails/EventDetails';
 import Events from './components/Events/Events';
 import OrderConfirmation from './pages/OrderConfirmation/OrderConfirmation';
+import MyTickets from './pages/MyTickets/MyTickets';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { CartProvider } from './contexts/CartContext';
 import atlasImage from './assets/atlas.jpg';
@@ -106,7 +106,14 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/events" element={<Events />} />
-            <Route path="/my-tickets" element={<MyTickets />} />
+            <Route 
+              path="/my-tickets" 
+              element={
+                <ProtectedRoute>
+                  <MyTickets />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="/event/:id" element={<EventDetails />} />
             <Route 
               path="/order-confirmation" 

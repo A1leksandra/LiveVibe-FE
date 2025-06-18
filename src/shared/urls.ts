@@ -4,6 +4,7 @@ export const urls = {
     login: '/users/login',
     // Users
     getCurrentUser: '/users/me',
+    getMyTickets: '/users/my-tickets',
     // Cities
     getAllCities: '/cities/all',
     // Events

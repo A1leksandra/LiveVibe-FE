@@ -103,10 +103,9 @@ const OrderConfirmation: React.FC = () => {
   return (
     <div className="order-confirmation-page">
       <div className="order-confirmation-container">
-        <h1>Оформлення замовлення</h1>
+        <h1>Ваше замовлення</h1>
         
         <div className="order-summary">
-          <h2>Ваше замовлення</h2>
           {items.map(item => (
             <div key={item.id} className="order-item">
               <div className="order-item-details">

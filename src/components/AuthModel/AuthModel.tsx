@@ -37,9 +37,7 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
   const handleAuthSuccess = (token: string) => {
     localStorage.setItem('authToken', token);
     clearForm();
-    // Close the modal first
     onClose();
-    // Use setTimeout to allow the request to complete and be visible in network tab
   };
 
   const validatePasswords = () => {
@@ -63,9 +61,7 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
           password
         };
         
-        console.log('Sending login request:', loginRequest);
         const response = await authRepository.login(loginRequest);
-        console.log('Login response:', response);
         
         if (response.isSuccess && response.data) {
           handleAuthSuccess(response.data.token);
@@ -86,9 +82,7 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
           password
         };
         
-        console.log('Sending register request:', registerRequest);
         const response = await authRepository.register(registerRequest);
-        console.log('Register response:', response);
         
         if (response.isSuccess && response.data) {
           handleAuthSuccess(response.data.token);
@@ -141,7 +135,7 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit}>
           {!isLogin && (
             <>
               <div className="form-group">
@@ -221,18 +215,18 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
             </div>
           )}
 
-          {apiError && <span className="error-message">{apiError}</span>}
+          {apiError && <div className="error-message">{apiError}</div>}
 
           <button type="submit" className="submit-button" disabled={isLoading}>
             {isLoading ? 'Завантаження...' : (isLogin ? 'Увійти' : 'Зареєструватися')}
           </button>
-        </form>
 
-        {isLogin && (
-          <button className="forgot-password">
-            Забули пароль?
-          </button>
-        )}
+          {isLogin && (
+            <button type="button" className="forgot-password">
+              Забули пароль?
+            </button>
+          )}
+        </form>
       </div>
     </div>
   );
