@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { userRepository } from '../../repositories/user/userRepository';
 import { UserDetails } from '../../repositories/user/UserDetails';
+import { clearAuth } from '../AuthModel/AuthModel';
 import './UserProfile.css';
 
 interface UserProfileProps {
@@ -38,7 +39,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ onLogout }) => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('authToken');
+        clearAuth();
         onLogout();
     };
 

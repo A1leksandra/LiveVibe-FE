@@ -22,6 +22,9 @@ export const clearAuth = () => {
     localStorage.removeItem('logoutTimer');
   }
   
+  // Dispatch auth change event
+  window.dispatchEvent(new Event('authChange'));
+  
   // Reload the page to reset app state
   window.location.reload();
 };
@@ -93,6 +96,10 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
     localStorage.setItem('authToken', response.token);
     localStorage.setItem('isAdmin', response.isAdmin.toString());
     setupAutoLogout();
+    
+    // Dispatch auth change event before closing modal
+    window.dispatchEvent(new Event('authChange'));
+    
     clearForm();
     onClose();
   };

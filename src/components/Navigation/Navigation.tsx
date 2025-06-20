@@ -17,13 +17,37 @@ const Navigation: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is authenticated
-    const token = localStorage.getItem('authToken');
-    setIsAuthenticated(!!token);
+    const checkAuthStatus = () => {
+      const token = localStorage.getItem('authToken');
+      setIsAuthenticated(!!token);
+    };
+
+    // Check initially
+    checkAuthStatus();
+
+    // Add event listener for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'authToken') {
+        checkAuthStatus();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen to our custom event for logout
+    const handleAuthChange = () => {
+      checkAuthStatus();
+    };
+    
+    window.addEventListener('authChange', handleAuthChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authChange', handleAuthChange);
+    };
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
     setIsAuthenticated(false);
   };
 

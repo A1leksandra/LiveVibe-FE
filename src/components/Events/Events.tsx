@@ -26,6 +26,10 @@ const Events: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [cities, setCities] = useState<string[]>([]);
   const [isCitiesLoading, setIsCitiesLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 12;
   const calendarRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const cityDropdownRef = useRef<HTMLDivElement>(null);
@@ -143,14 +147,16 @@ const Events: React.FC = () => {
       console.log('Fetching events with filters:', request);
 
       const response = await eventRepository.searchEvents({
-        page: 1,
-        pageSize: 10,
+        page: currentPage,
+        pageSize,
         request
       });
 
       if (response.isSuccess && response.data) {
         console.log('Received events:', response.data.items.length);
         setEvents(response.data.items);
+        setTotalPages(Math.ceil(response.data.totalCount / pageSize));
+        setTotalItems(response.data.totalCount);
       } else {
         console.log('API Error:', response.error);
       }
@@ -159,7 +165,7 @@ const Events: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [searchTerm, selectedCategory, selectedCity, startDate, endDate]);
+  }, [searchTerm, selectedCategory, selectedCity, startDate, endDate, currentPage]);
 
   useEffect(() => {
     fetchEvents();
@@ -288,6 +294,44 @@ const Events: React.FC = () => {
   const handleEventClick = (eventId: string) => {
     navigate(`/event/${eventId}`);
   };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Update admin status when auth changes
+  useEffect(() => {
+    const checkAdminStatus = () => {
+      const token = localStorage.getItem('authToken');
+      const isAdminValue = localStorage.getItem('isAdmin');
+      setIsAdmin(!!(token && isAdminValue === 'true'));
+    };
+
+    // Check initially
+    checkAdminStatus();
+
+    // Add event listener for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'authToken' || e.key === 'isAdmin') {
+        checkAdminStatus();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen to our custom event for auth changes
+    const handleAuthChange = () => {
+      checkAdminStatus();
+    };
+    
+    window.addEventListener('authChange', handleAuthChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authChange', handleAuthChange);
+    };
+  }, []);
 
   if (isLoading) {
     return <div className="events-page">Loading...</div>;
@@ -513,6 +557,36 @@ const Events: React.FC = () => {
         }))}
         onEventClick={handleEventClick}
       />
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="pagination-button"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1 || isLoading}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          
+          <div className="pagination-info">
+            <span>Сторінка {currentPage} з {totalPages}</span>
+            <span className="pagination-total">Всього подій: {totalItems}</span>
+          </div>
+
+          <button
+            className="pagination-button"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages || isLoading}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

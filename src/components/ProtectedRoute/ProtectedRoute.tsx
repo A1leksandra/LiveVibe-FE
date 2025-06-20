@@ -1,30 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import { isUserAdmin } from '../../shared/utils/authUtils';
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  children: React.ReactElement;
+  checkAdmin?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const location = useLocation();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, checkAdmin = false }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     setIsAuthenticated(!!token);
+    setIsAdmin(isUserAdmin());
+    setIsLoading(false);
   }, []);
 
-  if (isAuthenticated === null) {
-    // Still checking authentication status
-    return null;
+  if (isLoading) {
+    return null; // or a loading spinner
   }
 
   if (!isAuthenticated) {
-    // Redirect to the same page after login
-    return <Navigate to="/" state={{ from: location }} replace />;
+    return <Navigate to="/" />;
   }
 
-  return <>{children}</>;
+  if (checkAdmin && !isAdmin) {
+    return <Navigate to="/events" />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute; 

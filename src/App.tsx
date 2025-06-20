@@ -7,11 +7,13 @@ import EventDetails from './components/EventDetails/EventDetails';
 import Events from './components/Events/Events';
 import OrderConfirmation from './pages/OrderConfirmation/OrderConfirmation';
 import MyTickets from './pages/MyTickets/MyTickets';
+import CreateEvent from './pages/CreateEvent/CreateEvent';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { CartProvider } from './contexts/CartContext';
 import { eventRepository } from './repositories/event/eventsRepository';
 import { Event } from './repositories/event/Event';
 import { getImageUrl } from './shared/utils/imageUtils';
+import { isUserAdmin } from './shared/utils/authUtils';
 import './App.css';
 
 // Import images
@@ -99,6 +101,14 @@ const App: React.FC = () => {
               } 
             />
             <Route path="/event/:id" element={<EventDetails />} />
+            <Route 
+              path="/event/create" 
+              element={
+                <ProtectedRoute checkAdmin>
+                  <CreateEvent />
+                </ProtectedRoute>
+              } 
+            />
             <Route 
               path="/order-confirmation" 
               element={
