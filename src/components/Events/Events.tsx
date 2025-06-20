@@ -6,6 +6,7 @@ import { cityRepository } from '../../repositories/city/cityRepository';
 import { Event } from '../../repositories/event/Event';
 import { SearchEventsRequest } from '../../repositories/event/SearchEventsRequest';
 import { getImageUrl } from '../../shared/utils/imageUtils';
+import { isUserAdmin } from '../../shared/utils/authUtils';
 import './Events.css';
 
 const Events: React.FC = () => {
@@ -13,6 +14,7 @@ const Events: React.FC = () => {
   const location = useLocation();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
@@ -34,6 +36,10 @@ const Events: React.FC = () => {
     { label: 'Фестивалі', value: 'Фестиваль' },
     { label: 'Театр', value: 'Вистава' }
   ];
+
+  useEffect(() => {
+    setIsAdmin(isUserAdmin());
+  }, []);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -291,6 +297,37 @@ const Events: React.FC = () => {
     <div className="events-page">
       {/* Filter Buttons */}
       <div className="filter-buttons">
+        {isAdmin && (
+          <button
+            className="filter-button create-event-button"
+            onClick={() => navigate('/event/create')}
+          >
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 16 16" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              className="create-icon"
+            >
+              <path 
+                d="M8 3.33334V12.6667" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+              <path 
+                d="M3.33334 8H12.6667" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+            Створити подію
+          </button>
+        )}
         {categories.map(category => (
           <button
             key={category.value}

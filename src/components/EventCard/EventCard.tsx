@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../Card/Card';
 import Button from '../Button/Button';
+import { isUserAdmin } from '../../shared/utils/authUtils';
 import './EventCard.css';
 
 interface EventCardProps {
@@ -22,8 +23,13 @@ const EventCard: React.FC<EventCardProps> = ({
   price
 }) => {
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const handleBuyClick = () => {
+  useEffect(() => {
+    setIsAdmin(isUserAdmin());
+  }, []);
+
+  const handleClick = () => {
     navigate(`/event/${id}`);
   };
 
@@ -39,9 +45,9 @@ const EventCard: React.FC<EventCardProps> = ({
           <Button 
             variant="contained" 
             className="event-button"
-            onClick={handleBuyClick}
+            onClick={handleClick}
           >
-            Купити квиток
+            {isAdmin ? 'Деталі' : 'Купити квиток'}
           </Button>
         </div>
       </div>

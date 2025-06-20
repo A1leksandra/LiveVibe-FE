@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AuthModel.css';
 import { authRepository } from '../../repositories/auth/authRepository';
 import { RegisterRequest } from '../../repositories/auth/RegisterRequest';
 import { LoginRequest } from '../../repositories/auth/LoginRequest';
+import { AuthResponse } from '../../repositories/auth/AuthResponse';
 
 interface AuthModelProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+export const clearAuth = () => {
+  // Clear auth data
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('isAdmin');
+  
+  // Clear the auto-logout timer
+  const timerId = localStorage.getItem('logoutTimer');
+  if (timerId) {
+    clearTimeout(Number(timerId));
+    localStorage.removeItem('logoutTimer');
+  }
+  
+  // Reload the page to reset app state
+  window.location.reload();
+};
 
 const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -20,6 +37,19 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
   const [passwordError, setPasswordError] = useState('');
   const [apiError, setApiError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Cleanup effect
+  useEffect(() => {
+    return () => {
+      // Clear the timeout when component unmounts
+      clearTimeout(Number(localStorage.getItem('logoutTimer')));
+      // Remove event listeners
+      window.removeEventListener('mousemove', () => {});
+      window.removeEventListener('keypress', () => {});
+      window.removeEventListener('click', () => {});
+      window.removeEventListener('scroll', () => {});
+    };
+  }, []);
 
   if (!isOpen) return null;
 
@@ -34,8 +64,35 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
     setApiError('');
   };
 
-  const handleAuthSuccess = (token: string) => {
-    localStorage.setItem('authToken', token);
+  const handleLogout = () => {
+    clearAuth();
+  };
+
+  const setupAutoLogout = () => {
+    const LOGOUT_TIME = 60 * 60 * 1000; // 1 hour in milliseconds
+    const logoutTimer = setTimeout(handleLogout, LOGOUT_TIME);
+    
+    // Store the timer ID in localStorage to clear it if needed
+    localStorage.setItem('logoutTimer', logoutTimer.toString());
+
+    // Reset the timer on user activity
+    const resetTimer = () => {
+      clearTimeout(Number(localStorage.getItem('logoutTimer')));
+      const newTimer = setTimeout(handleLogout, LOGOUT_TIME);
+      localStorage.setItem('logoutTimer', newTimer.toString());
+    };
+
+    // Add event listeners for user activity
+    window.addEventListener('mousemove', resetTimer);
+    window.addEventListener('keypress', resetTimer);
+    window.addEventListener('click', resetTimer);
+    window.addEventListener('scroll', resetTimer);
+  };
+
+  const handleAuthSuccess = (response: AuthResponse) => {
+    localStorage.setItem('authToken', response.token);
+    localStorage.setItem('isAdmin', response.isAdmin.toString());
+    setupAutoLogout();
     clearForm();
     onClose();
   };
@@ -64,7 +121,7 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
         const response = await authRepository.login(loginRequest);
         
         if (response.isSuccess && response.data) {
-          handleAuthSuccess(response.data.token);
+          handleAuthSuccess(response.data);
         } else {
           setApiError(response.error?.message || 'Помилка входу');
         }
@@ -85,7 +142,7 @@ const AuthModel: React.FC<AuthModelProps> = ({ isOpen, onClose }) => {
         const response = await authRepository.register(registerRequest);
         
         if (response.isSuccess && response.data) {
-          handleAuthSuccess(response.data.token);
+          handleAuthSuccess(response.data);
         } else {
           setApiError(response.error?.message || 'Помилка реєстрації');
         }
