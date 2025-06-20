@@ -1,158 +1,160 @@
-.event-card {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  width: 100%;
-  height: 420px;
-  max-width: 450px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
+.card.event-card {
+  background: white !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px rgba(98, 57, 57, 0.08) !important;
+  border: 1px solid rgba(98, 57, 57, 0.15) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  width: 100% !important;
+  height: 460px !important;
+  max-width: 450px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  cursor: pointer !important;
+  transform: none !important;
 }
 
-.event-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(98, 57, 57, 0.15);
+.card.event-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 24px rgba(98, 57, 57, 0.12) !important;
+  border-color: rgba(98, 57, 57, 0.2) !important;
 }
 
-.event-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 8px 8px 0 0;
-  flex-shrink: 0;
+.event-card .event-image {
+  width: 100% !important;
+  height: 200px !important;
+  object-fit: cover !important;
+  border-radius: 20px 20px 0 0 !important;
+  flex-shrink: 0 !important;
 }
 
-.event-content {
-  padding: 1rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
+.event-card .event-content {
+  padding: 1.5rem !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
 }
 
-.event-content h3 {
-  margin: 0 0 0.5rem;
-  color: #623939;
-  font-size: 1.25rem;
+.event-card .event-content h3 {
+  margin: 0 0 0.5rem !important;
+  color: #623939 !important;
+  font-size: 1.25rem !important;
+  -webkit-line-clamp: 2 !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
 }
 
-.date {
-  color: #666;
-  margin: 0 0 0.5rem;
-  font-size: 0.875rem;
+.event-card .date {
+  color: #666 !important;
+  margin: 0 0 0.5rem !important;
+  font-size: 0.875rem !important;
 }
 
-.description {
-  color: #333;
-  margin: 0 0 1rem;
-  font-size: 0.875rem;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.event-card .description {
+  color: #333 !important;
+  margin: 0 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.4 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  flex: 1 !important;
+  min-height: 0 !important;
 }
 
-.event-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.event-card .event-footer {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding-top: 1rem !important;
+  margin-top: auto !important;
+  height: 42px !important;
 }
 
-.price {
-  color: #BB5256;
-  font-weight: 500;
-  font-size: 1.125rem;
+.event-card .price {
+  color: #BB5256 !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
 }
 
-.event-button {
-  min-width: 120px;
+.event-card button.event-button,
+.event-card button.edit-button,
+.event-card button.delete-button {
+  height: 42px !important;
+  padding: 0 1.5rem !important;
+  font-size: 0.875rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-.admin-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.edit-button,
-.delete-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  min-width: auto;
-}
-
-.edit-button {
-  color: #623939;
-  border-color: #623939;
-}
-
-.edit-button:hover {
-  background: #F3EEE8;
-}
-
-.delete-button {
-  color: #BB5256;
-  border-color: #BB5256;
-}
-
-.delete-button:hover {
-  background: #FFF0F0;
-}
-
-.edit-button svg,
-.delete-button svg {
-  width: 16px;
-  height: 16px;
-}
-
-.edit-button:disabled,
-.delete-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-@media (max-width: 768px) {
-  .event-footer {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-
-  .admin-actions {
-    justify-content: stretch;
-  }
-
-  .edit-button,
-  .delete-button {
-    flex: 1;
-    justify-content: center;
-  }
-}
-
-button.event-button {
-  padding: 0.75rem 1.5rem !important;
+.event-card button.event-button {
+  width: 160px !important;
   background-color: #BB5256 !important;
   color: #F3EEE8 !important;
   border: none !important;
   border-radius: 25px !important;
-  font-size: 0.95rem !important;
   text-transform: none !important;
   box-shadow: none !important;
   min-width: 120px !important;
   font-family: inherit !important;
 }
 
-button.event-button:hover {
+.event-card button.event-button:hover {
   background-color: #a34146 !important;
 }
 
-.event-card .event-button {
-  margin: 0;
+.event-card .admin-actions {
+  display: flex !important;
+  gap: 0.5rem !important;
+  height: 42px !important;
+}
+
+.event-card .edit-button,
+.event-card .delete-button {
+  gap: 0.5rem !important;
+  font-size: 0.875rem !important;
+  min-width: auto !important;
+  padding: 0 1rem !important;
+}
+
+.event-card .edit-button:hover {
+  background: #F3EEE8 !important;
+}
+
+.event-card .delete-button {
+  color: #BB5256 !important;
+  border-color: #BB5256 !important;
+}
+
+.event-card .delete-button:hover {
+  background: #FFF0F0 !important;
+}
+
+.event-card .edit-button svg,
+.event-card .delete-button svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+@media (max-width: 768px) {
+  .event-card .event-footer {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+  }
+
+  .event-card .admin-actions {
+    justify-content: stretch !important;
+  }
+
+  .event-card .edit-button,
+  .event-card .delete-button {
+    flex: 1 !important;
+    justify-content: center !important;
+  }
 } 

@@ -479,8 +479,8 @@ const CreateEvent: React.FC = () => {
             ))}
 
             {/* Add New Seat Type */}
-            <div className="add-seat-type">
-              <div className="seat-type-fields">
+            <div className="add-seat-type-container">
+              <div className="add-seat-type">
                 <input
                   type="text"
                   value={newSeatType.name}

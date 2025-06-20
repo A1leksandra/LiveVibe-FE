@@ -109,7 +109,7 @@ const EventCard: React.FC<EventCardProps> = ({
       <div className="event-content">
         <h3>{title}</h3>
         {date && <p className="date">{date}</p>}
-        <p className="description">{description}</p>
+        {description && <p className="description">{description}</p>}
         <div className="event-footer">
           <span className="price">{price}</span>
           {isAdmin ? (
@@ -140,11 +140,11 @@ const EventCard: React.FC<EventCardProps> = ({
             </div>
           ) : (
             <ActionButton 
-              variant="contained" 
-              className="event-button"
+            variant="contained" 
+            className="event-button"
               onClick={handleClick}
-            >
-              Купити квиток
+          >
+              Купити
             </ActionButton>
           )}
         </div>

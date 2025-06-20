@@ -15,11 +15,12 @@ interface EventsGridProps {
   events: Event[];
   onEventClick?: (id: string) => void;
   onEventDelete?: () => void;
+  className?: string;
 }
 
-const EventsGrid: React.FC<EventsGridProps> = ({ events, onEventClick, onEventDelete }) => {
+const EventsGrid: React.FC<EventsGridProps> = ({ events, onEventClick, onEventDelete, className }) => {
   return (
-    <div className="events-grid">
+    <div className={`events-grid ${className || ''}`}>
       {events.map((event) => (
         <div key={event.id} className="event-item">
           <EventCard
