@@ -9,6 +9,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
 .event-card:hover {
@@ -20,12 +21,12 @@
   width: 100%;
   height: 200px;
   object-fit: cover;
-  border-radius: 12px 12px 0 0;
+  border-radius: 8px 8px 0 0;
   flex-shrink: 0;
 }
 
 .event-content {
-  padding: 1.5rem;
+  padding: 1rem;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -33,52 +34,106 @@
   overflow: hidden;
 }
 
-.event-card h3 {
+.event-content h3 {
+  margin: 0 0 0.5rem;
   color: #623939;
   font-size: 1.25rem;
-  font-weight: 600;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .date {
-  color: #BB5256;
-  font-size: 0.9rem;
-  margin: 0 0 0.5rem 0;
+  color: #666;
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
 }
 
 .description {
-  color: #623939;
-  font-size: 0.95rem;
-  margin: 0;
-  line-height: 1.5;
+  color: #333;
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  opacity: 0.8;
-  flex: 1;
-  word-wrap: break-word;
 }
 
 .event-footer {
-  margin-top: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-shrink: 0;
 }
 
 .price {
+  color: #BB5256;
+  font-weight: 500;
+  font-size: 1.125rem;
+}
+
+.event-button {
+  min-width: 120px;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-button,
+.delete-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  min-width: auto;
+}
+
+.edit-button {
   color: #623939;
-  font-weight: 600;
-  font-size: 1.1rem;
+  border-color: #623939;
+}
+
+.edit-button:hover {
+  background: #F3EEE8;
+}
+
+.delete-button {
+  color: #BB5256;
+  border-color: #BB5256;
+}
+
+.delete-button:hover {
+  background: #FFF0F0;
+}
+
+.edit-button svg,
+.delete-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.edit-button:disabled,
+.delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .event-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .admin-actions {
+    justify-content: stretch;
+  }
+
+  .edit-button,
+  .delete-button {
+    flex: 1;
+    justify-content: center;
+  }
 }
 
 button.event-button {

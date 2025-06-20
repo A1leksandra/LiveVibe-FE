@@ -14,9 +14,10 @@ interface Event {
 interface EventsGridProps {
   events: Event[];
   onEventClick?: (id: string) => void;
+  onEventDelete?: () => void;
 }
 
-const EventsGrid: React.FC<EventsGridProps> = ({ events, onEventClick }) => {
+const EventsGrid: React.FC<EventsGridProps> = ({ events, onEventClick, onEventDelete }) => {
   return (
     <div className="events-grid">
       {events.map((event) => (
@@ -28,6 +29,7 @@ const EventsGrid: React.FC<EventsGridProps> = ({ events, onEventClick }) => {
             imageUrl={event.imageUrl}
             date={event.date}
             price={event.price}
+            onDelete={onEventDelete}
           />
         </div>
       ))}

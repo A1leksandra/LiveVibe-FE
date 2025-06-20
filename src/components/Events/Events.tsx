@@ -295,6 +295,11 @@ const Events: React.FC = () => {
     navigate(`/event/${eventId}`);
   };
 
+  const handleEventDelete = () => {
+    // Refresh the events list after deletion
+    fetchEvents();
+  };
+
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -556,6 +561,7 @@ const Events: React.FC = () => {
           price: `${event.matchedSeatCategoryPrice} UAH`
         }))}
         onEventClick={handleEventClick}
+        onEventDelete={handleEventDelete}
       />
 
       {/* Pagination controls */}

@@ -16,8 +16,6 @@ export const api = {
             console.log('resultUrl', axios.defaults.baseURL + resultUrl);
             const response = await axios.get<TResponse>(resultUrl, { params: params });
 
-            console.log('here,,', response.data);
-
             return { isSuccess: true, data: response.data };
         }
         catch (error) {
