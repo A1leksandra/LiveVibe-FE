@@ -5,6 +5,8 @@ export const urls = {
     // Users
     getCurrentUser: '/users/me',
     getMyTickets: '/users/my-tickets',
+    getAllUsers: '/users/all',
+    getUserById: (id: string) => `/users/${id}`,
     // Cities
     getAllCities: '/cities/all',
     getAllCitiesFull: '/cities/all/full',
