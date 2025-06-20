@@ -147,7 +147,7 @@ const Events: React.FC = () => {
       console.log('Fetching events with filters:', request);
 
       const response = await eventRepository.searchEvents({
-        page: currentPage,
+        pageNumber: currentPage,
         pageSize,
         request
       });

@@ -1,5 +1,5 @@
 export interface PaginatedRequest<TRequest> {
-    page: number;
+    pageNumber: number;
     pageSize: number;
     request: TRequest;
 } 

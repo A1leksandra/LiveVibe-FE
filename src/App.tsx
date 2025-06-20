@@ -29,7 +29,7 @@ const HomePage = () => {
     const fetchEvents = async () => {
       try {
         const response = await eventRepository.searchEvents({
-          page: 1,
+          pageNumber: 1,
           pageSize: 6,
           request: {
             Title: '',

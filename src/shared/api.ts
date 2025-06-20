@@ -40,7 +40,7 @@ export const api = {
 
     postPaginated: async <TRequest, TResponse>(url: string, request: PaginatedRequest<TRequest>): Promise<ApiResponse<PagedResponse<TResponse>>> => {
         try {
-            const queryParams = new URLSearchParams({ page: request.page.toString(), pageSize: request.pageSize.toString() });
+            const queryParams = new URLSearchParams({ page: request.pageNumber.toString(), pageSize: request.pageSize.toString() });
 
             const response = await axios.post<PagedResponse<TResponse>>(url + '?' + queryParams.toString(), request.request);
             return { isSuccess: true, data: response.data };

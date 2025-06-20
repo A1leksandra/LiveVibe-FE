@@ -58,7 +58,7 @@ const EditEvent: React.FC = () => {
         const [eventResponse, organizersResponse, categoriesResponse, citiesResponse] = await Promise.all([
           eventRepository.getById(id!),
           organizerRepository.getAllOrganizers({
-            page: 1,
+            pageNumber: 1,
             pageSize: 100,
             request: undefined
           }),

@@ -53,7 +53,7 @@ const CreateEvent: React.FC = () => {
       try {
         // Fetch organizers
         const organizersResponse = await organizerRepository.getAllOrganizers({
-          page: 1,
+          pageNumber: 1,
           pageSize: 100,
           request: undefined
         });
