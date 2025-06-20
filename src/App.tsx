@@ -9,6 +9,7 @@ import OrderConfirmation from './pages/OrderConfirmation/OrderConfirmation';
 import MyTickets from './pages/MyTickets/MyTickets';
 import CreateEvent from './pages/CreateEvent/CreateEvent';
 import EditEvent from './pages/EditEvent/EditEvent';
+import UsersList from './pages/Users/Users';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { CartProvider } from './contexts/CartContext';
 import { eventRepository } from './repositories/event/eventsRepository';
@@ -123,6 +124,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <OrderConfirmation />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/users" 
+              element={
+                <ProtectedRoute checkAdmin>
+                  <UsersList />
                 </ProtectedRoute>
               } 
             />

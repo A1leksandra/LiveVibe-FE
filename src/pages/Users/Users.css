@@ -1,0 +1,99 @@
+.users-page {
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .users-page h1 {
+    color: #623939;
+    margin-bottom: 24px;
+    font-size: 32px;
+    font-weight: 600;
+  }
+  
+  .users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .user-card {
+    padding: 20px;
+    background-color: #F3EEE8;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .user-info {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #BB5256;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 18px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  
+  .user-details {
+    flex-grow: 1;
+  }
+  
+  .user-details h3 {
+    color: #623939;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+  }
+  
+  .user-details p {
+    color: #623939;
+    opacity: 0.8;
+    margin: 0 0 4px 0;
+    font-size: 14px;
+  }
+  
+  .details-button {
+    width: 100%;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 32px;
+  }
+  
+  .page-button {
+    padding: 8px 16px;
+    border: 1px solid #BB5256;
+    background: none;
+    color: #BB5256;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .page-button:hover {
+    background-color: #BB5256;
+    color: white;
+  }
+  
+  .page-button.active {
+    background-color: #BB5256;
+    color: white;
+  }

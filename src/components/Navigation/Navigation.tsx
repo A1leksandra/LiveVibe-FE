@@ -5,6 +5,7 @@ import AuthModel from '../AuthModel/AuthModel';
 import CartModal from '../CartModal/CartModal';
 import UserProfile from '../UserProfile/UserProfile';
 import { useCart } from '../../contexts/CartContext';
+import { isUserAdmin } from '../../shared/utils/authUtils';
 import './Navigation.css';
 
 const Navigation: React.FC = () => {
@@ -15,11 +16,13 @@ const Navigation: React.FC = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const checkAuthStatus = () => {
       const token = localStorage.getItem('authToken');
       setIsAuthenticated(!!token);
+      setIsAdmin(isUserAdmin());
     };
 
     // Check initially
@@ -166,14 +169,24 @@ const Navigation: React.FC = () => {
         <nav className="nav-buttons">
           {isAuthenticated ? (
             <>
-              <Link to="/my-tickets" className="nav-link">
+              {isAdmin ? (
                 <Button 
                   variant="outlined" 
                   className="nav-button"
+                  onClick={() => navigate('/users')}
                 >
-                  Мої квитки
+                  Користувачі
                 </Button>
-              </Link>
+              ) : (
+                <Link to="/my-tickets" className="nav-link">
+                  <Button 
+                    variant="outlined" 
+                    className="nav-button"
+                  >
+                    Мої квитки
+                  </Button>
+                </Link>
+              )}
 
               <div className="cart-button-container">
                 <button 
