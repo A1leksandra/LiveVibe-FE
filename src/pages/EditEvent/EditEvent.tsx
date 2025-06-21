@@ -32,6 +32,15 @@ const EditEvent: React.FC = () => {
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [time, setTime] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState('12:00');
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const dateButtonRef = useRef<HTMLButtonElement>(null);
+  const timeDropdownRef = useRef<HTMLDivElement>(null);
+  const timeButtonRef = useRef<HTMLButtonElement>(null);
   const [organizerId, setOrganizerId] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [cityId, setCityId] = useState('');
@@ -95,6 +104,9 @@ const EditEvent: React.FC = () => {
           setTitle(event.title);
           setDescription(event.description);
           setLocation(event.location);
+          const eventDate = new Date(event.time);
+          setSelectedDate(eventDate);
+          setSelectedTime(eventDate.toTimeString().slice(0, 5));
           setTime(new Date(event.time).toISOString().slice(0, 16));
           
           // Find matching IDs from the dropdown data
@@ -142,6 +154,109 @@ const EditEvent: React.FC = () => {
       }
     };
   }, [previewUrl]);
+
+  // Handle click outside calendar
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        calendarRef.current &&
+        dateButtonRef.current &&
+        !calendarRef.current.contains(event.target as Node) &&
+        !dateButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsDatePickerOpen(false);
+      }
+
+      if (
+        timeDropdownRef.current &&
+        timeButtonRef.current &&
+        !timeDropdownRef.current.contains(event.target as Node) &&
+        !timeButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsTimePickerOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Calendar functions
+  const generateCalendarDays = () => {
+    const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    const lastDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+    const days: Date[] = [];
+    
+    const firstDay = firstDayOfMonth.getDay();
+    
+    for (let i = 0; i < firstDay; i++) {
+      days.push(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), -firstDay + i + 1));
+    }
+    
+    for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+      days.push(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day));
+    }
+    
+    return days;
+  };
+
+  const goToPreviousMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  };
+
+  const goToNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  };
+
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear();
+  };
+
+  const isSelectedDate = (date: Date) => {
+    return selectedDate &&
+      date.getDate() === selectedDate.getDate() &&
+      date.getMonth() === selectedDate.getMonth() &&
+      date.getFullYear() === selectedDate.getFullYear();
+  };
+
+  const isOtherMonth = (date: Date) => {
+    return date.getMonth() !== currentMonth.getMonth();
+  };
+
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+    setIsDatePickerOpen(false);
+  };
+
+  const formatSelectedDate = () => {
+    if (!selectedDate) return 'Виберіть дату';
+    return new Intl.DateTimeFormat('uk-UA', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(selectedDate);
+  };
+
+  const generateTimeOptions = () => {
+    const times = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        times.push(timeString);
+      }
+    }
+    return times;
+  };
+
+  const handleTimeSelect = (time: string) => {
+    setSelectedTime(time);
+    setIsTimePickerOpen(false);
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -252,7 +367,9 @@ const EditEvent: React.FC = () => {
         categoryId,
         location,
         cityId,
-        time: new Date(time).toISOString()
+                                time: selectedDate && selectedTime ? 
+              new Date(`${selectedDate.toISOString().split('T')[0]}T${selectedTime}:00.000Z`).toISOString() : 
+              new Date(time).toISOString()
       });
 
       if (!eventResponse.isSuccess || !eventResponse.data) {
@@ -445,14 +562,136 @@ const EditEvent: React.FC = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="time">Дата та час</label>
-                <input
-                  type="datetime-local"
-                  id="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  required
-                />
+                <label>Дата та час</label>
+                <div className="datetime-container">
+                  <div className="date-picker-wrapper">
+                    <button 
+                      ref={dateButtonRef}
+                      type="button"
+                      className="date-picker-button"
+                      onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+                    >
+                      <svg 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 16 16" 
+                        fill="none" 
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="calendar-icon"
+                      >
+                        <path 
+                          d="M12.6667 2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V13.3333C2 14.0697 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0697 14 13.3333V4C14 3.26362 13.403 2.66667 12.6667 2.66667Z" 
+                          stroke="currentColor" 
+                          strokeWidth="1.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        />
+                        <path 
+                          d="M2 6.66667H14" 
+                          stroke="currentColor" 
+                          strokeWidth="1.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        />
+                        <path 
+                          d="M5.33333 1.33333V4" 
+                          stroke="currentColor" 
+                          strokeWidth="1.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        />
+                        <path 
+                          d="M10.6667 1.33333V4" 
+                          stroke="currentColor" 
+                          strokeWidth="1.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      {formatSelectedDate()}
+                    </button>
+                    {isDatePickerOpen && (
+                      <div ref={calendarRef} className="date-picker-container">
+                        <div className="calendar">
+                          <div className="calendar-header">
+                            <div className="month-navigation">
+                              <button type="button" className="month-nav-btn" onClick={goToPreviousMonth}>
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                  <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              </button>
+                              <span className="current-month">
+                                {new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(currentMonth)}
+                              </span>
+                              <button type="button" className="month-nav-btn" onClick={goToNextMonth}>
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                  <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                          <div className="calendar-weekdays">
+                            {['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'].map(day => (
+                              <div key={day} className="weekday">{day}</div>
+                            ))}
+                          </div>
+                          <div className="calendar-days">
+                            {generateCalendarDays().map((date, index) => (
+                              <button
+                                key={index}
+                                type="button"
+                                className={`calendar-day 
+                                  ${isToday(date) ? 'today' : ''} 
+                                  ${isSelectedDate(date) ? 'selected' : ''} 
+                                  ${isOtherMonth(date) ? 'other-month' : ''}`}
+                                onClick={() => handleDateSelect(date)}
+                              >
+                                {date.getDate()}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="time-picker-wrapper">
+                    <button
+                      ref={timeButtonRef}
+                      type="button"
+                      className="time-picker-button"
+                      onClick={() => setIsTimePickerOpen(!isTimePickerOpen)}
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="time-icon"
+                      >
+                        <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/>
+                        <path d="M8 4v4l3 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      {selectedTime}
+                    </button>
+                    {isTimePickerOpen && (
+                      <div ref={timeDropdownRef} className="time-dropdown-container">
+                        <div className="time-dropdown">
+                          {generateTimeOptions().map((time) => (
+                            <button
+                              key={time}
+                              type="button"
+                              className={`time-option ${selectedTime === time ? 'selected' : ''}`}
+                              onClick={() => handleTimeSelect(time)}
+                            >
+                              {time}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 

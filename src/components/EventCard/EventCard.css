@@ -75,6 +75,15 @@
   height: 42px !important;
 }
 
+/* Admin layout - price above buttons */
+.event-card .event-footer:has(.admin-actions) {
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  height: auto !important;
+  gap: 0.75rem !important;
+}
+
 .event-card .price {
   color: #BB5256 !important;
   font-weight: 500 !important;
@@ -112,14 +121,19 @@
   display: flex !important;
   gap: 0.5rem !important;
   height: 42px !important;
+  justify-content: center !important;
+  width: 100% !important;
 }
 
 .event-card .edit-button,
 .event-card .delete-button {
   gap: 0.5rem !important;
   font-size: 0.875rem !important;
-  min-width: auto !important;
+  min-width: 120px !important;
   padding: 0 1rem !important;
+  width: 120px !important;
+  justify-content: center !important;
+  border-radius: 25px !important;
 }
 
 .event-card .edit-button:hover {
@@ -148,13 +162,20 @@
     gap: 1rem !important;
   }
 
+  .event-card .event-footer:has(.admin-actions) {
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+
   .event-card .admin-actions {
-    justify-content: stretch !important;
+    justify-content: center !important;
+    width: 100% !important;
   }
 
   .event-card .edit-button,
   .event-card .delete-button {
-    flex: 1 !important;
     justify-content: center !important;
+    width: 120px !important;
+    min-width: 120px !important;
   }
 } 

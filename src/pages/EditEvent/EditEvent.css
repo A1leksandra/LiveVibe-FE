@@ -296,6 +296,238 @@
   cursor: not-allowed;
 }
 
+/* Стилі для кастомного календаря */
+.datetime-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.date-picker-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.date-picker-button {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #DDD;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  color: #623939;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.date-picker-button:hover,
+.date-picker-button:focus {
+  border-color: #BB5256;
+  outline: none;
+}
+
+.calendar-icon {
+  color: #BB5256;
+  flex-shrink: 0;
+}
+
+.time-picker-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.time-picker-button {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #DDD;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  color: #623939;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.time-picker-button:hover,
+.time-picker-button:focus {
+  border-color: #BB5256;
+  outline: none;
+}
+
+.time-icon {
+  color: #BB5256;
+  flex-shrink: 0;
+}
+
+.time-dropdown-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #BB5256;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(187, 82, 86, 0.2);
+  margin-top: 4px;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.time-dropdown {
+  padding: 0.5rem;
+}
+
+.time-option {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: none;
+  font-size: 1rem;
+  color: #623939;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.time-option:hover {
+  background-color: rgba(187, 82, 86, 0.1);
+  color: #BB5256;
+}
+
+.time-option.selected {
+  background-color: #BB5256;
+  color: #F3EEE8;
+}
+
+.date-picker-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #BB5256;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(187, 82, 86, 0.2);
+  margin-top: 4px;
+  min-width: 280px;
+}
+
+.calendar {
+  width: 100%;
+}
+
+.calendar-header {
+  text-align: center;
+  padding: 0.5rem;
+  font-weight: 500;
+  color: #623939;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.month-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.month-nav-btn {
+  background: none;
+  border: none;
+  color: #623939;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.month-nav-btn:hover {
+  background-color: rgba(187, 82, 86, 0.1);
+  color: #BB5256;
+}
+
+.current-month {
+  font-weight: 600;
+  color: #623939;
+  min-width: 150px;
+  text-align: center;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #623939;
+  padding: 0.5rem;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  padding: 0 0.5rem 0.5rem;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  font-size: 0.875rem;
+  color: #623939;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.calendar-day:hover:not(:disabled) {
+  background-color: rgba(187, 82, 86, 0.1);
+  color: #BB5256;
+}
+
+.calendar-day.today {
+  font-weight: 700;
+  color: #BB5256;
+}
+
+.calendar-day.selected {
+  background-color: #BB5256;
+  color: #F3EEE8;
+}
+
+.calendar-day.other-month {
+  color: #62393980;
+}
+
+.calendar-day:disabled {
+  color: #62393940;
+  cursor: not-allowed;
+  background: none;
+}
+
 @media (max-width: 768px) {
   .edit-event-page {
     padding: 1rem;
@@ -303,6 +535,17 @@
 
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .datetime-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .date-picker-container {
+    left: 0;
+    right: 0;
+    min-width: auto;
   }
 
   .seat-type-item {
