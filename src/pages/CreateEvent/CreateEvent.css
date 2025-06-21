@@ -92,11 +92,53 @@
 .form-group select {
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23623939' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-color: #F3EEE8;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23BB5256' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
     background-size: 1em;
     padding-right: 2.5rem;
+    color: #623939;
+    border: 2px solid #BB5256;
+}
+
+/* Стилі для випадаючого списку (працює не у всіх браузерах) */
+.create-event-form select {
+    color-scheme: light;
+}
+
+.create-event-form select option {
+    background-color: #F3EEE8 !important;
+    color: #623939 !important;
+    padding: 8px !important;
+}
+
+.create-event-form select option:hover {
+    background-color: #BB5256 !important;
+    color: #F3EEE8 !important;
+}
+
+.create-event-form select option:checked {
+    background-color: #BB5256 !important;
+    color: #F3EEE8 !important;
+}
+
+/* Альтернативний підхід для Firefox */
+@-moz-document url-prefix() {
+    .create-event-form select option {
+        background-color: #F3EEE8;
+        color: #623939;
+    }
+    
+    .create-event-form select option:hover {
+        background-color: #BB5256;
+        color: #F3EEE8;
+    }
+}
+
+.create-event-form select:focus {
+    border-color: #BB5256 !important;
+    box-shadow: 0 0 0 2px rgba(187, 82, 86, 0.2) !important;
 }
 
 /* Image upload styles */

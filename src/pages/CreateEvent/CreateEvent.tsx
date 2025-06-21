@@ -8,6 +8,7 @@ import { eventSeatTypeRepository } from '../../repositories/eventSeatType/eventS
 import { Organizer } from '../../repositories/organizer/Organizer';
 import { Category } from '../../repositories/category/Category';
 import { City } from '../../repositories/city/City';
+import CustomSelect from '../../components/CustomSelect/CustomSelect';
 import './CreateEvent.css';
 
 interface SeatType {
@@ -321,36 +322,24 @@ const CreateEvent: React.FC = () => {
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="category">Категорія</label>
-                <select
-                  id="category"
+                <CustomSelect
+                  options={categories.map(category => ({ value: category.id, label: category.name }))}
                   value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
+                  onChange={setCategoryId}
+                  placeholder="Виберіть категорію"
                   required
-                >
-                  <option value="">Виберіть категорію</option>
-                  {categories.map(category => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="organizer">Організатор</label>
-                <select
-                  id="organizer"
+                <CustomSelect
+                  options={organizers.map(organizer => ({ value: organizer.id, label: organizer.name }))}
                   value={organizerId}
-                  onChange={(e) => setOrganizerId(e.target.value)}
+                  onChange={setOrganizerId}
+                  placeholder="Виберіть організатора"
                   required
-                >
-                  <option value="">Виберіть організатора</option>
-                  {organizers.map(organizer => (
-                    <option key={organizer.id} value={organizer.id}>
-                      {organizer.name}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             </div>
           </div>
@@ -360,19 +349,13 @@ const CreateEvent: React.FC = () => {
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="city">Місто</label>
-                <select
-                  id="city"
+                <CustomSelect
+                  options={cities.map(city => ({ value: city.id, label: city.name }))}
                   value={cityId}
-                  onChange={(e) => setCityId(e.target.value)}
+                  onChange={setCityId}
+                  placeholder="Виберіть місто"
                   required
-                >
-                  <option value="">Виберіть місто</option>
-                  {cities.map(city => (
-                    <option key={city.id} value={city.id}>
-                      {city.name}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               <div className="form-group">
