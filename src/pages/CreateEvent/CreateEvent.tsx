@@ -351,8 +351,8 @@ const CreateEvent: React.FC = () => {
         // Continue anyway since the event was created
       }
 
-      // Navigate to the event details page
-      navigate(`/event/${eventId}`);
+      // Navigate to the events page with filters
+      navigate('/events');
     } catch (error) {
       console.error('Failed to create event:', error);
       setError('Виникла несподівана помилка');

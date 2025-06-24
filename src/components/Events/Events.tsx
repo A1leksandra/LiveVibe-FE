@@ -29,7 +29,7 @@ const Events: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const pageSize = 12;
+  const pageSize = 20;
   const calendarRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const cityDropdownRef = useRef<HTMLDivElement>(null);
@@ -153,7 +153,6 @@ const Events: React.FC = () => {
       });
 
       if (response.isSuccess && response.data) {
-        console.log('Received events:', response.data.items.length);
         setEvents(response.data.items);
         setTotalPages(Math.ceil(response.data.totalCount / pageSize));
         setTotalItems(response.data.totalCount);
@@ -308,33 +307,23 @@ const Events: React.FC = () => {
   // Update admin status when auth changes
   useEffect(() => {
     const checkAdminStatus = () => {
-      const token = localStorage.getItem('authToken');
-      const isAdminValue = localStorage.getItem('isAdmin');
-      setIsAdmin(!!(token && isAdminValue === 'true'));
+      setIsAdmin(isUserAdmin());
     };
 
     // Check initially
     checkAdminStatus();
 
-    // Add event listener for storage changes
-    const handleStorageChange = (e: StorageEvent) => {
+    // Listen for auth changes
+    window.addEventListener('authChange', checkAdminStatus);
+    window.addEventListener('storage', (e) => {
       if (e.key === 'authToken' || e.key === 'isAdmin') {
         checkAdminStatus();
       }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also listen to our custom event for auth changes
-    const handleAuthChange = () => {
-      checkAdminStatus();
-    };
-    
-    window.addEventListener('authChange', handleAuthChange);
+    });
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('authChange', handleAuthChange);
+      window.removeEventListener('authChange', checkAdminStatus);
+      window.removeEventListener('storage', checkAdminStatus);
     };
   }, []);
 

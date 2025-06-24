@@ -13,7 +13,7 @@
   
   .users-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
     margin-bottom: 32px;
   }
@@ -25,17 +25,18 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-height: 180px;
   }
   
   .user-info {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     align-items: flex-start;
   }
   
   .user-avatar {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background-color: #BB5256;
     color: white;
@@ -43,7 +44,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 500;
-    font-size: 18px;
+    font-size: 16px;
     text-transform: uppercase;
     flex-shrink: 0;
   }
@@ -54,16 +55,16 @@
   
   .user-details h3 {
     color: #623939;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
-    margin: 0 0 8px 0;
+    margin: 0 0 6px 0;
   }
   
   .user-details p {
     color: #623939;
     opacity: 0.8;
-    margin: 0 0 4px 0;
-    font-size: 14px;
+    margin: 0 0 3px 0;
+    font-size: 13px;
   }
   
   .details-button {
@@ -96,4 +97,29 @@
   .page-button.active {
     background-color: #BB5256;
     color: white;
+  }
+
+  /* Responsive grid */
+  @media (min-width: 1200px) {
+    .users-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (min-width: 900px) and (max-width: 1199px) {
+    .users-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 899px) {
+    .users-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 599px) {
+    .users-grid {
+      grid-template-columns: 1fr;
+    }
   }
